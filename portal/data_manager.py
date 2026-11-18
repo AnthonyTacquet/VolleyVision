@@ -3,13 +3,15 @@ from __future__ import annotations
 import base64
 import json
 import os
+import shutil
 import tempfile
 import threading
 from pathlib import Path, PurePosixPath
 from typing import Any
+from urllib.parse import quote
 
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -25,6 +27,7 @@ MODEL_TARGET_LABELS = {
     "block": "Block",
     "floor": "Ball hits floor",
 }
+LABEL_TYPES = ("all", "ball", "events")
 PORTAL_DIR = Path(__file__).resolve().parent
 
 
@@ -105,6 +108,51 @@ def _model_task(path: Path, root_index: int) -> tuple[str, str] | None:
     return None
 
 
+def _label_video_path(videos_root: Path, name: str) -> Path:
+    if not name or "/" in name or "\\" in name or any(ord(char) < 32 or ord(char) == 127 for char in name):
+        raise HTTPException(status_code=400, detail="Invalid video name.")
+    path = _child(videos_root, name)
+    if path.suffix.lower() not in VIDEO_EXTENSIONS or not path.is_file():
+        raise HTTPException(status_code=404, detail="Video not found.")
+    return path
+
+
+def _read_label_doc(path: Path) -> dict[str, Any]:
+    try:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise HTTPException(status_code=409, detail="The video's label file could not be read safely.") from exc
+    if not isinstance(doc, dict):
+        raise HTTPException(status_code=409, detail="The video's label file has an invalid format.")
+    if not isinstance(doc.get("ball", {}), dict) or not isinstance(doc.get("events", []), list):
+        raise HTTPException(status_code=409, detail="The video's label file has invalid ball or event labels.")
+    doc.setdefault("ball", {})
+    doc.setdefault("events", [])
+    return doc
+
+
+def _write_label_doc(path: Path, doc: dict[str, Any]) -> None:
+    temporary_path: Path | None = None
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", prefix=".label-import-", suffix=".tmp",
+            dir=path.parent, delete=False,
+        ) as temporary:
+            temporary_path = Path(temporary.name)
+            json.dump(doc, temporary)
+        if path.exists():
+            backup = path.with_suffix(".json.bak")
+            if not backup.exists() or path.stat().st_mtime - backup.stat().st_mtime > 600:
+                shutil.copy2(path, backup)
+        os.replace(temporary_path, path)
+    except OSError as exc:
+        raise HTTPException(status_code=500, detail=f"Could not save label file: {exc}") from exc
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+
+
 def create_data_manager_app(
     videos_dir: Path,
     labels_dir: Path,
@@ -137,6 +185,134 @@ def create_data_manager_app(
                     continue
                 videos.append({"name": path.name, "stem": path.stem, "size_bytes": path.stat().st_size})
         return {"videos": videos}
+
+    @app.get("/api/labels")
+    def list_labels(
+        query: str = Query(default="", max_length=120),
+        type: str = Query(default="all"),
+    ) -> dict[str, list[dict[str, Any]]]:
+        if type not in LABEL_TYPES:
+            raise HTTPException(status_code=400, detail="Select all, ball, or event labels.")
+        search = query.strip().casefold()
+        labels = []
+        if videos_root.exists() and labels_root.exists():
+            for video in sorted(videos_root.iterdir(), key=lambda item: item.name.lower()):
+                if (
+                    video.is_symlink()
+                    or not video.is_file()
+                    or video.suffix.lower() not in VIDEO_EXTENSIONS
+                    or (search and search not in video.name.casefold())
+                ):
+                    continue
+                label_path = _child(labels_root, f"{video.name}.json")
+                if label_path.is_symlink() or not label_path.is_file():
+                    continue
+                doc = _read_label_doc(label_path)
+                labels.append({
+                    "video": video.name,
+                    "ball_labels": len(doc.get("ball", {})),
+                    "event_labels": len(doc.get("events", [])),
+                    "size_bytes": label_path.stat().st_size,
+                })
+        if type == "ball":
+            labels = [label for label in labels if label["ball_labels"]]
+        elif type == "events":
+            labels = [label for label in labels if label["event_labels"]]
+        return {"labels": labels}
+
+    @app.post("/api/labels/import")
+    def import_labels(target: str = Form(...), file: UploadFile = File(...)) -> dict[str, Any]:
+        if target not in LABEL_TYPES:
+            raise HTTPException(status_code=400, detail="Select all, ball, or event labels before importing.")
+        original_name = _validate_segment(file.filename or "")
+        if Path(original_name).suffix.lower() != ".json":
+            raise HTTPException(status_code=400, detail="Import a VolleyVision label file with the .json extension.")
+        payload = file.file.read(10 * 1024 * 1024 + 1)
+        if len(payload) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="The label file is larger than 10 MB.")
+        try:
+            imported = json.loads(payload.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise HTTPException(status_code=400, detail="The selected file is not valid UTF-8 JSON.") from exc
+        if not isinstance(imported, dict) or not isinstance(imported.get("video"), str):
+            raise HTTPException(status_code=400, detail="The label file must include its associated video name.")
+        video_name = imported["video"]
+        _label_video_path(videos_root, video_name)
+        if not isinstance(imported.get("ball", {}), dict) or not isinstance(imported.get("events", []), list):
+            raise HTTPException(status_code=400, detail="The label file has invalid ball or event labels.")
+        if target == "ball" and not isinstance(imported.get("ball"), dict):
+            raise HTTPException(status_code=400, detail="The label file does not contain valid ball labels.")
+        if target == "events" and not isinstance(imported.get("events"), list):
+            raise HTTPException(status_code=400, detail="The label file does not contain valid event labels.")
+
+        destination = _child(labels_root, f"{video_name}.json")
+        with cache_lock:
+            existing = _read_label_doc(destination) if destination.exists() else {}
+            try:
+                revision = int(existing.get("rev", 0)) + 1
+            except (TypeError, ValueError) as exc:
+                raise HTTPException(status_code=409, detail="The video's label revision is invalid.") from exc
+            if target == "all":
+                doc = imported
+            else:
+                doc = existing
+                doc[target] = imported[target]
+            doc["video"] = video_name
+            doc.setdefault("ball", {})
+            doc.setdefault("events", [])
+            doc["rev"] = revision
+            _write_label_doc(destination, doc)
+        return {
+            "video": video_name,
+            "ball_labels": len(doc.get("ball", {})),
+            "event_labels": len(doc.get("events", [])),
+        }
+
+    @app.get("/api/labels/{name}/download")
+    def download_labels(name: str, type: str = Query(default="all")) -> JSONResponse:
+        if type not in LABEL_TYPES:
+            raise HTTPException(status_code=400, detail="Select all, ball, or event labels.")
+        video = _label_video_path(videos_root, name)
+        path = _child(labels_root, f"{video.name}.json")
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="Label file not found.")
+        doc = _read_label_doc(path)
+        if type == "ball":
+            doc["events"] = []
+        elif type == "events":
+            doc["ball"] = {}
+        filename = quote(f"{video.name}.json", safe="")
+        return JSONResponse(
+            content=doc,
+            headers={"Content-Disposition": f"attachment; filename*=UTF-8''{filename}"},
+        )
+
+    @app.delete("/api/labels/{name}")
+    def delete_labels(name: str, type: str = Query(default="all")) -> dict[str, str]:
+        if type not in LABEL_TYPES:
+            raise HTTPException(status_code=400, detail="Select all, ball, or event labels.")
+        video = _label_video_path(videos_root, name)
+        path = _child(labels_root, f"{video.name}.json")
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="Label file not found.")
+        with cache_lock:
+            if type == "all":
+                try:
+                    path.unlink()
+                    _child(labels_root, f"{video.name}.json.bak").unlink(missing_ok=True)
+                except OSError as exc:
+                    raise HTTPException(status_code=500, detail=f"Could not delete label file: {exc}") from exc
+            else:
+                doc = _read_label_doc(path)
+                doc[type] = {} if type == "ball" else []
+                if not doc["ball"] and not doc["events"]:
+                    try:
+                        path.unlink()
+                    except OSError as exc:
+                        raise HTTPException(status_code=500, detail=f"Could not delete label file: {exc}") from exc
+                else:
+                    _write_label_doc(path, doc)
+        return {"video": video.name, "deleted": type}
 
     @app.get("/api/models")
     def list_models() -> dict[str, list[dict[str, Any]]]:

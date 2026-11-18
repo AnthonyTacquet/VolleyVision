@@ -2,6 +2,8 @@
 
 VolleyVision brings Volley Labeler, court calibration, model training, data management, and match analysis together, with GPU and CPU-only deployment options.
 
+Obvious, but I have to mention it, this repo is completely vibe-coded.
+
 ## Requirements
 
 - Docker Compose v2
