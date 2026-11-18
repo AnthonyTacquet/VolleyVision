@@ -64,6 +64,27 @@ body {
   margin: 16px 0 !important;
 }
 
+.page-heading {
+  display: block !important;
+  margin: 0 0 16px !important;
+}
+
+.page-heading h1 {
+  margin: 0 !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: normal !important;
+}
+
+.page-heading p {
+  max-width: 860px;
+  margin: 6px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
 .panel,
 .card,
 .topbar {
@@ -73,16 +94,58 @@ body {
   box-shadow: var(--shadow) !important;
 }
 
+section.topbar {
+  padding: 16px 18px !important;
+}
+
 .panel-head,
 .cardhead {
   padding: 16px 18px !important;
   border-bottom-color: var(--line) !important;
 }
 
+.panel-head h2,
+.panel-head h3,
+.cardhead h3,
+.stage-title {
+  font-size: 15px !important;
+  line-height: 1.35 !important;
+}
+
+.panel-head p,
+.cardhead p {
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+button:not(.help-icon):not(.x),
+.btn,
+.smallbtn {
+  font-size: 12px !important;
+}
+
+.field-label,
+.label,
+.field label {
+  font-size: 11px !important;
+}
+
 .panel-body,
 .cardbody,
-.body {
+.body,
+.panel > .controls,
+.stage {
   padding: 16px 18px !important;
+}
+
+.items {
+  padding: 16px 18px !important;
+}
+
+.model-filters,
+.search-controls {
+  padding: 16px 18px 0 !important;
 }
 
 .job,
@@ -252,7 +315,13 @@ nav {
   .cardhead,
   .panel-body,
   .cardbody,
-  .body {
+  .body,
+  section.topbar,
+  .panel > .controls,
+  .stage,
+  .items,
+  .model-filters,
+  .search-controls {
     padding-inline: 14px !important;
   }
 }

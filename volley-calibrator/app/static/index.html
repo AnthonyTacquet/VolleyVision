@@ -103,11 +103,11 @@
 </head>
 <body>
   <div class="shell">
+    <header class="page-heading"><h1>Court selection</h1><p>Set court landmarks and net position on a video reference frame.</p></header>
     <section class="topbar">
       <div>
         <div class="library-heading">
           <label class="field-label" for="videoSelect">Video library</label>
-          <div class="status-pill" id="connectionStatus">● Connected to video library</div>
         </div>
         <select id="videoSelect"><option value="">Loading videos…</option></select>
       </div>
@@ -220,8 +220,6 @@
   function currentPoints() { return landmarksForMode(); }
   function selectedPointName() { return pointsForMode().find(p => p[0] === state.activePoint)?.[1] || ''; }
   function completeCount() { return pointsForMode().filter(([name]) => currentPoints()[name]).length; }
-  function setStatus(text) { $('connectionStatus').textContent = text; }
-
   async function loadVideos() {
     try {
       const response = await fetch('/api/videos');
@@ -231,13 +229,12 @@
       if (!state.videos.length) {
         select.add(new Option('No videos found in mounted folder', ''));
         $('videoPath').textContent = data.warning || `No supported video files found under ${data.video_root}`;
-        setStatus('● Video folder empty'); return;
+        return;
       }
       select.add(new Option('Select a video…', ''));
       for (const item of state.videos) select.add(new Option(item.relative_path, item.id));
-      setStatus(`● ${state.videos.length} video${state.videos.length === 1 ? '' : 's'} available`);
     } catch (err) {
-      setStatus('● API connection error'); showToast(`Could not load video list: ${err.message}`, true);
+      showToast(`Could not load video list: ${err.message}`, true);
     }
   }
 
