@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VolleyVision</title>
+  <script src="/_portal/path-prefix.js"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1118;--panel:#111b25;--line:#263847;--text:#e9f1f7;--muted:#92a5b6;--purple:#bd9cff;--red:#ff7e84}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 75% -10%,#282044 0,transparent 45%),var(--bg);color:var(--text);font:14px/1.5 'Roboto Mono',monospace}button,input,select{font:inherit}.shell{max-width:1320px;margin:auto;padding:28px clamp(16px,3vw,42px) 46px}.intro{margin:12px 0 22px}.eyebrow{color:var(--purple);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.intro h1{margin:5px 0;font-size:25px;line-height:1.2}.intro p,.panel-head p,.hint{color:var(--muted);font-size:12px}.intro p{max-width:880px}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}.panel{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:rgba(17,27,37,.95);box-shadow:0 18px 50px #0005}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border-bottom:1px solid var(--line)}.panel-head h2{font-size:15px}.panel-head p{margin-top:3px}.model-actions{display:flex;gap:7px;align-items:center}.model-filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(125px,.7fr);gap:8px;padding:12px 13px 0}.model-filters input,.model-filters select,.controls input{width:100%;min-width:0;min-height:38px;padding:8px 10px;border:1px solid #304555;border-radius:7px;outline:none;background:#0b141c;color:var(--text);font-size:11px}.model-filters input:focus,.model-filters select:focus,.controls input:focus{border-color:var(--purple)}.items{display:grid;gap:9px;padding:13px}.scroll-list{height:420px;overflow-y:auto;align-content:start;overscroll-behavior:contain}.item{min-width:0;padding:12px;border:1px solid #293d4b;border-radius:9px;background:#0e1821}.item-name{overflow-wrap:anywhere;font-size:12px;font-weight:700}.item-meta{margin-top:4px;color:var(--muted);font-size:10px;overflow-wrap:anywhere}.controls{display:flex;gap:7px;align-items:center;margin-top:10px}.controls input{min-height:36px;padding:7px 9px}.btn{display:inline-flex;flex:none;min-height:35px;align-items:center;justify-content:center;padding:6px 10px;border:1px solid #405366;border-radius:7px;background:#1a2a38;color:var(--text);font-size:10px;font-weight:700;text-decoration:none;cursor:pointer;white-space:nowrap}.btn:hover:not(:disabled){filter:brightness(1.15)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.action{border-color:#6a5692;background:#342a48;color:#e4d7ff}.btn.danger{border-color:#70414b;background:#2d1b22;color:#ffc1c4}.empty{padding:24px 12px;color:var(--muted);text-align:center;font-size:11px}.hint{margin-top:13px}.notice{min-height:20px;margin-top:12px;color:#ffb9bd;font-size:11px}.notice.ok{color:#93e8d0}
+    .search-controls{display:flex;gap:8px;padding:12px 13px 0}.search-controls input{width:100%;min-width:0;min-height:38px;padding:8px 10px;border:1px solid #304555;border-radius:7px;outline:none;background:#0b141c;color:var(--text);font-size:11px}.search-controls input:focus{border-color:var(--purple)}
+    @media(max-width:850px){.columns{grid-template-columns:1fr}}@media(max-width:520px){.shell{padding:17px 11px 28px}.panel-head{align-items:flex-start;flex-wrap:wrap}.model-actions{margin-left:auto}.controls{align-items:stretch}.controls .btn{padding:5px 8px}.scroll-list{height:360px}}
+  </style>
+  <link rel="stylesheet" href="/_portal/shared.css">
+</head>
+<body>
+  <main class="shell">
+    <div class="columns">
+      <section class="panel" aria-labelledby="videos-heading">
+        <div class="panel-head"><div><h2 id="videos-heading">Search video files</h2><p>Main writable video library</p></div></div>
+        <form class="search-controls" id="video-search-form">
+          <input id="video-query" type="search" maxlength="120" placeholder="Search by video name…" aria-label="Search video names">
+          <button class="btn action" type="submit">Search</button>
+        </form>
+        <div class="items scroll-list" id="videos" aria-live="polite"><div class="empty">Enter a video name and search to see matching files.</div></div>
+      </section>
+      <section class="panel" aria-labelledby="models-heading">
+        <div class="panel-head"><div><h2 id="models-heading">Trained models</h2><p>Rename, download, or import model weights</p></div><div class="model-actions"><button class="btn action" id="import-model" type="button" disabled>Import model</button><button class="btn" id="refresh-models" type="button">Refresh</button></div></div>
+        <div class="model-filters">
+          <input id="model-query" type="search" maxlength="120" placeholder="Search models…" aria-label="Search model names">
+          <select id="model-type" aria-label="Filter models by type">
+            <option value="all">All types</option>
+            <option value="ball_tracking">Ball tracking</option>
+            <option value="spike">Spike</option>
+            <option value="reception">Reception</option>
+            <option value="serve">Serve</option>
+            <option value="dig">Dig</option>
+            <option value="set">Set</option>
+            <option value="block">Block</option>
+            <option value="floor">Ball hits floor</option>
+          </select>
+        </div>
+        <input id="import-model-file" type="file" accept=".pt" hidden>
+        <div class="items scroll-list" id="models" aria-live="polite"><div class="empty">Loading models…</div></div>
+      </section>
+    </div>
+    <div class="hint">Imported models are added to the writable training models folder using the selected target type. Renamed models keep their training-target suffix. Read-only external model libraries can be downloaded but not renamed.</div>
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+  </main>
+<script>
+const $=id=>document.getElementById(id);
+const size=value=>{let n=Number(value)||0;const units=["B","KB","MB","GB","TB"];let i=0;while(n>=1024&&i<units.length-1){n/=1024;i++}return`${n.toFixed(i>1?1:0)} ${units[i]}`};
+async function api(url,options={}){const isFormData=options.body instanceof FormData;const response=await fetch(url,{headers:{...(!isFormData?{"Content-Type":"application/json"}:{}),...(options.headers||{})},...options});const body=await response.text();let data={};try{data=body?JSON.parse(body):{}}catch{data={detail:body}}if(!response.ok)throw new Error(data.detail||`Request failed (${response.status})`);return data}
+function notice(message,ok=false){$("notice").textContent=message;$("notice").classList.toggle("ok",ok)}
+function button(text,action,kind=""){const el=document.createElement("button");el.type="button";el.className=`btn ${kind}`;el.textContent=text;el.addEventListener("click",action);return el}
+function addRenameControl(card,route,current,placeholder,onRenamed){const controls=document.createElement("div");controls.className="controls";const input=document.createElement("input");input.value=current;input.maxLength=120;input.setAttribute("aria-label",`New name for ${card.dataset.label}`);input.placeholder=placeholder;const rename=button("Rename",async()=>{const newName=input.value.trim();if(!newName||newName===current){notice("Enter a different name.");return}rename.disabled=true;try{const result=await api(`${route}/rename`,{method:"POST",body:JSON.stringify({new_name:newName})});notice(`Renamed to ${result.name}.`,true);await onRenamed()}catch(error){notice(error.message)}finally{rename.disabled=false}});input.addEventListener("keydown",event=>{if(event.key==="Enter")rename.click()});controls.append(input,rename);card.append(controls)}
+async function searchVideos(event){event?.preventDefault();const query=$("video-query").value.trim();const list=$("videos");if(!query){list.innerHTML='<div class="empty">Enter a video name to search.</div>';return}list.innerHTML='<div class="empty">Searching…</div>';try{const data=await api(`/api/videos?query=${encodeURIComponent(query)}`);if(!data.videos.length){list.innerHTML='<div class="empty">No videos match that name.</div>';return}list.replaceChildren(...data.videos.map(video=>{const card=document.createElement("article");card.className="item";card.dataset.label=video.name;const name=document.createElement("div");name.className="item-name";name.textContent=video.name;const meta=document.createElement("div");meta.className="item-meta";meta.textContent=size(video.size_bytes);card.append(name,meta);addRenameControl(card,`/api/videos/${encodeURIComponent(video.name)}`,video.stem,"New name (extension is kept)",searchVideos);const download=document.createElement("a");download.className="btn action";download.textContent="Download video";download.href=`/api/videos/${encodeURIComponent(video.name)}/download`;card.querySelector(".controls").append(download);return card}))}catch(error){list.innerHTML="";const empty=document.createElement("div");empty.className="empty";empty.textContent=error.message;list.append(empty)}}
+let modelEntries=[];
+function renderModels(){const list=$("models");if(!modelEntries.length){list.innerHTML='<div class="empty">No trained model weights found.</div>';return}const query=$("model-query").value.trim().toLocaleLowerCase();const type=$("model-type").value;const filtered=modelEntries.filter(model=>(type==="all"||model.task===type)&&(!query||`${model.name} ${model.task_label} ${model.source}`.toLocaleLowerCase().includes(query)));if(!filtered.length){list.innerHTML='<div class="empty">No models match these filters.</div>';return}list.replaceChildren(...filtered.map(model=>{const card=document.createElement("article");card.className="item";card.dataset.label=model.name;const name=document.createElement("div");name.className="item-name";name.textContent=model.name;const meta=document.createElement("div");meta.className="item-meta";meta.textContent=`${model.task_label} · ${size(model.size_bytes)} · ${model.source}`;card.append(name,meta);if(model.can_rename)addRenameControl(card,`/api/models/${encodeURIComponent(model.id)}`,model.edit_name,"New model name (target suffix is kept)",loadModels);else{const readOnly=document.createElement("div");readOnly.className="item-meta";readOnly.textContent="Read-only model library";card.append(readOnly)}const download=document.createElement("a");download.className="btn action";download.textContent="Download .pt";download.href=`/api/models/${encodeURIComponent(model.id)}/download`;if(model.can_rename){const controls=card.querySelector(".controls");controls.append(download,button("Delete",async()=>{if(!confirm(`Delete model “${model.name}”? This cannot be undone.`))return;try{await api(`/api/models/${encodeURIComponent(model.id)}`,{method:"DELETE"});notice(`Deleted ${model.name}.`,true);await loadModels()}catch(error){notice(error.message)}}, "danger"));}else{const controls=document.createElement("div");controls.className="controls";controls.append(download);card.append(controls)}return card}))}
+async function loadModels(){const list=$("models");list.innerHTML='<div class="empty">Loading models…</div>';try{const data=await api("/api/models");modelEntries=data.models;renderModels()}catch(error){list.innerHTML="";const empty=document.createElement("div");empty.className="empty";empty.textContent=error.message;list.append(empty)}}
+async function importModel(){const fileInput=$("import-model-file");const file=fileInput.files[0];const target=$("model-type").value;if(target==="all"){notice("Select a specific model type before importing.");return}if(!file)return;const form=new FormData();form.append("target",target);form.append("file",file);const importButton=$("import-model");importButton.disabled=true;notice("Importing model…");try{const result=await api("/api/models/import",{method:"POST",body:form});notice(`Imported ${result.name}.`,true);await loadModels()}catch(error){notice(error.message)}finally{fileInput.value="";importButton.disabled=$("model-type").value==="all"}}
+$("video-search-form").addEventListener("submit",searchVideos);$("refresh-models").addEventListener("click",loadModels);$("model-query").addEventListener("input",renderModels);$("model-type").addEventListener("change",()=>{$("import-model").disabled=$("model-type").value==="all";renderModels()});$("import-model").addEventListener("click",()=>{if($("model-type").value==="all"){notice("Select a specific model type before importing.");return}$("import-model-file").click()});$("import-model-file").addEventListener("change",importModel);loadModels();
+</script>
+</body>
+</html>

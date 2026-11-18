@@ -1,0 +1,55 @@
+x-gpu: &gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+services:
+  volleyvision:
+    image: ${VOLLEYVISION_IMAGE:-volleyvision:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        IMAGE_VERSION: ${VOLLEYVISION_VERSION:-dev}
+    container_name: volleyvision
+    restart: unless-stopped
+    init: true
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:${PORT:-8095}:8000"]
+    environment:
+      HOME: /tmp
+      VIDEO_ROOT: /videos
+      EXTRA_VIDEO_ROOTS: /existing-videos
+      WORKSPACE_ROOT: /workspace
+      MODELS_ROOT: /workspace/models
+      EXTRA_MODEL_ROOTS: /legacy-models
+      OUTPUT_ROOT: /calibrations
+      VIDEO_JSON_PREFIX: "${VIDEO_JSON_PREFIX:-../}"
+      SOURCE_ROOTS: /sources
+      CALIBRATIONS_ROOT: /calibrations
+      LABELER_VIDEO_ROOT: /videos
+      LABELER_LABELS_ROOT: /labels
+      LABELER_EXPORT_ROOT: /exports
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+      OMP_NUM_THREADS: "4"
+    volumes:
+      - "${LABELS_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}}:/sources:ro"
+      - "${VIDEO_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}/videos}:/videos:rw"
+      - "${LABELS_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}}/labels:/labels:rw"
+      - "${LABELS_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}}/export:/exports:rw"
+      - "${CALIBRATIONS_HOST_PATH:-${OUTPUT_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}/calibrations}}:/calibrations:rw"
+      - "${OUTPUT_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}/training}:/workspace:rw"
+      - "${EXISTING_VIDEO_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}/existing-videos}:/existing-videos:ro"
+      - "${EXISTING_MODEL_HOST_PATH:-${VOLLEY_DATA_HOST_PATH:-./data}/existing-models}:/legacy-models:ro"
+    shm_size: "4gb"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

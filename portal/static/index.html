@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1118">
+  <title>VolleyVision</title>
+  <link rel="icon" type="image/svg+xml" href="/_portal/volleyvision-logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#0b1118;--panel:#111b25;--line:#293b49;--text:#e9f1f7;--muted:#9aabba;--mint:#54d6b0;--blue:#54d6b0}
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden;background:var(--bg);color:var(--text);font:14px/1.5 'Roboto Mono',monospace}
+    .topbar{display:flex;align-items:center;gap:16px;min-height:76px;padding:0 max(calc((100vw - 1440px)/2 + 36px),clamp(16px,2.4vw,36px));border-bottom:1px solid var(--line);background:var(--panel)}
+    .brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}.mark{display:block;width:40px;height:40px;flex:none;border-radius:12px;box-shadow:0 6px 22px #43c9ac33}.brand-name{font:700 17px/1.1 'Roboto Mono',monospace}.brand-sub{margin-top:4px;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+    nav{display:flex;flex:1 1 auto;align-self:stretch;align-items:stretch;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:none}.tab{--tab-color:#54d6b0;position:relative;display:flex;align-items:center;gap:8px;padding:0 10px;border:0;border-radius:8px 8px 0 0;background:transparent;color:var(--muted);font:600 12px 'Roboto Mono',monospace;text-decoration:none;white-space:nowrap;transition:color .15s,background-color .15s}.tab:hover{color:var(--text);background:color-mix(in srgb,var(--tab-color) 8%,transparent)}.tab[aria-selected="true"]{color:var(--text);background:color-mix(in srgb,var(--tab-color) 16%,transparent)}.tab[aria-selected="true"]::after{position:absolute;right:10px;bottom:-1px;left:10px;height:2px;background:var(--tab-color);content:""}.tab-index{color:#9aabb7;font:600 10px 'Roboto Mono',monospace}.gpu-monitor[hidden]{display:none}.gpu-monitor{display:grid;flex:0 0 auto;gap:4px;min-width:240px;max-width:310px;padding:7px 10px;border:1px solid #2c514d;border-radius:11px;background:#102b2a;color:#93e8d0;font:9px/1.3 'Roboto Mono',monospace}.gpu-monitor-summary{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:600;white-space:nowrap}.gpu-monitor-dot{width:7px;height:7px;flex:none;border-radius:50%;background:#93e8d0;box-shadow:0 0 10px #8ee6ad88}.gpu-monitor-dot.bad{background:#ff7e84;box-shadow:0 0 10px #ff7e8488}.gpu-monitor-row{display:flex;justify-content:space-between;gap:4px;white-space:nowrap}.gpu-monitor-row span:first-child{overflow:hidden;text-overflow:ellipsis}.gpu-monitor-row span:last-child{text-align:right}.workspace{min-height:0;background:var(--bg)}iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
+    nav::-webkit-scrollbar{display:none}
+    #tab-labeler,#tab-court,#tab-training,#tab-analysis,#tab-data{--tab-color:#54d6b0}
+    @media(max-width:1100px){.topbar{gap:8px;padding:0 clamp(16px,2.4vw,36px)}.brand{gap:8px}.brand-sub{display:none}.tab{padding:0 6px}.gpu-monitor{min-width:190px;max-width:250px;padding:6px 8px}}
+    @media(max-width:700px){.topbar{min-height:68px;display:grid;grid-template-columns:1fr;gap:0;padding:9px 14px 0}.brand{display:none}nav{grid-row:1;width:100%;min-height:48px;gap:0}.tab{padding:0 12px;font-size:12px}.tab[aria-selected="true"]::after{right:10px;left:10px}.tab-index{display:none}.gpu-monitor{grid-row:2;justify-self:end;width:min(100%,310px);max-width:100%;margin:0 0 8px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img class="mark" src="/_portal/volleyvision-logo.svg" alt="" aria-hidden="true"><div><div class="brand-name">VolleyVision</div><div class="brand-sub">Match workspace</div></div></div>
+    <nav role="tablist" aria-label="VolleyVision workflows">
+      <a class="tab" id="tab-labeler" role="tab" href="#labeler" aria-controls="workflow" aria-selected="true"><span class="tab-index">01</span>Volley Labeler</a>
+      <a class="tab" id="tab-court" role="tab" href="#court" aria-controls="workflow" aria-selected="false"><span class="tab-index">02</span>Court selection</a>
+      <a class="tab" id="tab-training" role="tab" href="#training" aria-controls="workflow" aria-selected="false"><span class="tab-index">03</span>Training</a>
+      <a class="tab" id="tab-analysis" role="tab" href="#analysis" aria-controls="workflow" aria-selected="false"><span class="tab-index">04</span>Analysis</a>
+      <a class="tab" id="tab-data" role="tab" href="#data" aria-controls="workflow" aria-selected="false"><span class="tab-index">05</span>Data manipulation &amp; export</a>
+    </nav>
+    <aside class="gpu-monitor" id="gpu-monitor" aria-label="GPU monitor" hidden>
+      <div class="gpu-monitor-summary"><span class="gpu-monitor-dot" id="gpu-monitor-dot"></span><span id="gpu-monitor-summary">Loading GPU status…</span></div>
+      <div id="gpu-monitor-rows"></div>
+    </aside>
+  </header>
+  <main class="workspace"><iframe id="workflow" title="Volley Labeler workflow" src="/labeler/"></iframe></main>
+  <script>
+    const workflows = {labeler:"Volley Labeler",court:"Court selection",training:"Training",analysis:"Analysis",data:"Data manipulation and export"};
+    const frame = document.getElementById("workflow");
+    const gpuMonitor = document.getElementById("gpu-monitor");
+    let gpuMonitorTimer = null;
+    let gpuMonitorInFlight = false;
+    let gpuMonitorActive = false;
+    async function refreshGpuMonitor() {
+      if (!gpuMonitorActive || gpuMonitorInFlight) return;
+      gpuMonitorInFlight = true;
+      const summary = document.getElementById("gpu-monitor-summary");
+      const dot = document.getElementById("gpu-monitor-dot");
+      const rows = document.getElementById("gpu-monitor-rows");
+      try {
+        const response = await fetch("/training/api/status", {cache: "no-store", headers: {Accept: "application/json"}});
+        if (!response.ok) throw new Error(`Request failed (${response.status})`);
+        const status = await response.json();
+        if (!gpuMonitorActive) return;
+        const gpus = status.gpu_usage?.gpus;
+        if (!status.gpu_usage?.available || !Array.isArray(gpus) || !gpus.length) {
+          throw new Error(status.gpu_error || "GPU usage data is unavailable.");
+        }
+        const average = Math.round(gpus.reduce((total, gpu) => total + (Number(gpu.utilization_gpu) || 0), 0) / gpus.length);
+        summary.textContent = `GPU load ${average}% average across ${gpus.length} device${gpus.length === 1 ? "" : "s"}`;
+        dot.classList.remove("bad");
+        rows.replaceChildren(...gpus.map(gpu => {
+          const row = document.createElement("div");
+          row.className = "gpu-monitor-row";
+          const name = document.createElement("span");
+          name.textContent = `${gpu.index} ${gpu.name || `GPU ${gpu.index}`}`;
+          const details = document.createElement("span");
+          const memory = `${(Number(gpu.mem_used_mb || 0) / 1024).toFixed(1)} / ${(Number(gpu.mem_total_mb || 0) / 1024).toFixed(1)} GB`;
+          details.textContent = `${Math.round(Number(gpu.utilization_gpu) || 0)}% · ${memory} · ${Number(gpu.temp_c || 0).toFixed(0)}°C`;
+          row.append(name, details);
+          return row;
+        }));
+      } catch (error) {
+        if (!gpuMonitorActive) return;
+        summary.textContent = "GPU monitor unavailable";
+        dot.classList.add("bad");
+        rows.textContent = error.message;
+      } finally {
+        gpuMonitorInFlight = false;
+      }
+    }
+    function selectWorkflow() {
+      const selected = workflows[location.hash.slice(1)] ? location.hash.slice(1) : "labeler";
+      frame.src = `/${selected}/?view=${Date.now()}`;
+      frame.title = `VolleyVision ${workflows[selected]}`;
+      for (const [name, title] of Object.entries(workflows)) {
+        document.getElementById(`tab-${name}`).setAttribute("aria-selected", String(name === selected));
+      }
+      gpuMonitorActive = true;
+      gpuMonitor.hidden = false;
+      if (gpuMonitorTimer) clearInterval(gpuMonitorTimer);
+      gpuMonitorTimer = setInterval(refreshGpuMonitor, 3000);
+      refreshGpuMonitor();
+      if (!workflows[location.hash.slice(1)]) history.replaceState(null, "", "#labeler");
+    }
+    window.addEventListener("hashchange", selectWorkflow);
+    selectWorkflow();
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>VolleyVision</title>
+  <desc>A volleyball with a rising data trend, representing match analysis.</desc>
+  <defs>
+    <linearGradient id="tile" x1="7" y1="5" x2="57" y2="59" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#183a3b"/>
+      <stop offset="1" stop-color="#14283a"/>
+    </linearGradient>
+    <linearGradient id="ball" x1="15" y1="13" x2="48" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#70e6c6"/>
+      <stop offset="1" stop-color="#4ab7db"/>
+    </linearGradient>
+    <clipPath id="ball-clip">
+      <circle cx="31" cy="32" r="20"/>
+    </clipPath>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#tile)"/>
+  <circle cx="31" cy="32" r="20" fill="#16383a" stroke="url(#ball)" stroke-width="2.5"/>
+  <g clip-path="url(#ball-clip)" stroke="#55d6b3" stroke-opacity=".72" stroke-width="1.7" stroke-linecap="round">
+    <path d="M17 14c7 5 11 11 12 18 1 7-2 14-8 21"/>
+    <path d="M10 26c8 3 15 2 21-1 6-3 11-8 14-15"/>
+    <path d="M10 40c8-4 15-4 22-1 6 3 11 7 15 14"/>
+  </g>
+  <path d="m16 42 8-8 8 3 13-14" stroke="#b4e5ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="16" cy="42" r="2" fill="#b4e5ff"/>
+  <circle cx="24" cy="34" r="2" fill="#b4e5ff"/>
+  <circle cx="32" cy="37" r="2" fill="#b4e5ff"/>
+  <circle cx="45" cy="23" r="3" fill="#f2ca78" stroke="#183a3b" stroke-width="1.5"/>
+</svg>

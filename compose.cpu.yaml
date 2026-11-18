@@ -1,0 +1,14 @@
+services:
+  volleyvision:
+    image: ${VOLLEYVISION_CPU_IMAGE:-volleyvision:cpu}
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+      args:
+        IMAGE_VERSION: ${VOLLEYVISION_VERSION:-dev-cpu}
+    deploy:
+      resources:
+        reservations:
+          devices: !reset []
+    environment:
+      NVIDIA_VISIBLE_DEVICES: void

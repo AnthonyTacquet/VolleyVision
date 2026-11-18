@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VolleyVision</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="/_portal/path-prefix.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1118;
+      --panel: #111b25;
+      --panel-2: #162330;
+      --line: #263847;
+      --muted: #92a5b6;
+      --text: #e9f1f7;
+      --accent: #54d6b0;
+      --accent-2: #6bb8ff;
+      --danger: #ff7e84;
+      --shadow: 0 18px 50px rgba(0,0,0,.24);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 75% -10%, #17364a 0, transparent 45%), var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+    button, input, select { font: inherit; }
+    .shell { max-width: 1600px; margin: 0 auto; padding: 12px clamp(16px, 3vw, 42px) 46px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+    .brand { display: flex; gap: 13px; align-items: center; }
+    .brand-mark { width: 42px; height: 42px; display:grid; place-items:center; border-radius: 13px; background: linear-gradient(145deg, #5be0b9, #3289c5); color: #07151a; font-size: 22px; font-weight: 700; box-shadow: 0 8px 28px #43c9ac33; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font: 700 clamp(21px, 2.1vw, 28px)/1.1 'Space Grotesk', sans-serif; letter-spacing: -.7px; }
+    .subtitle { margin-top: 5px; color: var(--muted); font-size: 13px; }
+    .status-pill { border: 1px solid #2c514d; color: #93e8d0; background: #102b2a; padding: 7px 11px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .topbar { display: grid; grid-template-columns: minmax(260px, 1fr) auto; gap: 14px; background: rgba(17,27,37,.88); border: 1px solid var(--line); border-radius: 18px; padding: 16px; box-shadow: var(--shadow); margin-bottom: 18px; }
+    .field-label { display: block; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; margin-bottom: 7px; }
+    .library-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
+    .library-heading .field-label { margin-bottom: 0; }
+    select, input[type=number] { width: 100%; color: var(--text); background: #0d1720; border: 1px solid #304555; border-radius: 9px; padding: 10px 12px; outline: none; min-height: 40px; }
+    select:focus, input:focus { border-color: var(--accent-2); box-shadow: 0 0 0 3px #6bb8ff18; }
+    .top-meta { display: flex; flex-direction: column; justify-content: end; min-width: 230px; color: var(--muted); font-size: 12px; line-height: 1.6; text-align: right; overflow-wrap: anywhere; }
+    .workspace { display: grid; grid-template-columns: 310px minmax(0, 1fr); gap: 18px; align-items: start; }
+    .panel { background: rgba(17,27,37,.92); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+    .panel-head { padding: 17px 18px 13px; border-bottom: 1px solid var(--line); }
+    .panel-head h2 { font: 600 16px 'Space Grotesk', sans-serif; }
+    .panel-head p { color: var(--muted); font-size: 12px; margin-top: 5px; line-height: 1.5; }
+    .controls { padding: 15px; }
+    .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; background: #0b151e; border: 1px solid #263b49; padding: 4px; border-radius: 11px; gap: 4px; margin-bottom: 16px; }
+    .mode-tabs button { border: 0; color: var(--muted); background: transparent; border-radius: 8px; padding: 9px; cursor: pointer; font-weight: 700; font-size: 12px; }
+    .mode-tabs button.active { color: #061a19; background: var(--accent); }
+    .active-task { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom: 11px; }
+    .active-task strong { font: 600 14px 'Space Grotesk', sans-serif; }
+    .counter { font-size: 11px; color: var(--muted); background: #1c2c39; padding: 4px 8px; border-radius: 999px; }
+    .landmark-list { display: grid; gap: 5px; max-height: 430px; overflow: auto; padding-right: 3px; }
+    .landmark-row { display:flex; align-items:center; gap: 9px; width:100%; border:1px solid transparent; background:#0e1922; color:var(--text); border-radius:9px; padding:8px 9px; text-align:left; cursor:pointer; min-height:39px; }
+    .landmark-row:hover { border-color:#385466; }
+    .landmark-row.active { background:#17342f; border-color:#3a9f83; }
+    .dot { width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:#526a7b; }
+    .landmark-row.done .dot { background:var(--accent); box-shadow:0 0 0 3px #54d6b01c; }
+    .landmark-name { font-size:12px; font-weight:600; flex:1; }
+    .landmark-value { color:var(--muted); font-size:10px; font-variant-numeric:tabular-nums; }
+    .hint { margin-top: 13px; border-left: 2px solid var(--accent-2); background: #10202d; padding: 10px 11px; color: #b6c7d5; font-size: 11px; line-height: 1.55; border-radius: 0 8px 8px 0; }
+    .actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; }
+    .btn { display:inline-flex; justify-content:center; align-items:center; gap:7px; min-height:39px; border:1px solid #354b5c; border-radius:9px; color:var(--text); background:#1a2a38; padding:8px 11px; font-size:12px; font-weight:700; cursor:pointer; transition:.15s ease; }
+    .btn:hover:not(:disabled) { filter:brightness(1.13); transform:translateY(-1px); }
+    .btn:disabled { opacity:.35; cursor:not-allowed; }
+    .btn.primary { color:#071a17; border-color:#4dd0ad; background:linear-gradient(135deg,#68e3bc,#42c5a0); }
+    .btn.blue { color:#081827; border-color:#67b9ff; background:linear-gradient(135deg,#84c9ff,#5daaf2); }
+    .btn.danger { color:#ffb9bd; border-color:#684248; background:#2d1b22; }
+    .save-area { border-top:1px solid var(--line); margin:16px -15px -15px; padding:14px 15px 15px; background:#0e1821; }
+    .save-area .btn { width:100%; }
+    .save-note { color:var(--muted); font-size:10px; line-height:1.5; margin-top:8px; overflow-wrap:anywhere; }
+    .stage-panel { padding: 15px; }
+    .stage-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:2px 2px 13px; }
+    .frame-meta { color:var(--muted); font-size:12px; }
+    .frame-meta strong { color:var(--text); font-variant-numeric:tabular-nums; }
+    .stage-badge { color:#a9d7ff; background:#142a3d; border:1px solid #294b67; font-size:10px; font-weight:700; padding:5px 8px; border-radius:999px; }
+    .stage-wrap { width:100%; aspect-ratio:16/9; background:#05090d; border:1px solid #314554; border-radius:12px; overflow:hidden; position:relative; margin:0 auto; }
+    .stage-wrap video, .stage-wrap canvas { display:block; width:100%; height:100%; }
+    .stage-wrap video { position:absolute; inset:0; object-fit:fill; }
+    .stage-wrap canvas { position:relative; z-index:2; cursor:crosshair; touch-action: manipulation; }
+    .empty-state { position:absolute; inset:0; display:grid; place-items:center; color:var(--muted); text-align:center; padding:20px; }
+    .empty-state .empty-icon { font-size:35px; margin-bottom:9px; }
+    .transport { display:grid; grid-template-columns:auto minmax(100px,1fr) 110px auto auto; gap:9px; align-items:center; margin-top:12px; }
+    .transport .btn { min-width:42px; }
+    input[type=range] { width:100%; accent-color:var(--accent); cursor:pointer; }
+    .frame-input { display:flex; align-items:center; gap:6px; }
+    .frame-input input { min-width:0; text-align:center; padding:7px; min-height:36px; }
+    .frame-input span { font-size:10px; color:var(--muted); }
+    .secondary-info { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+    .info-card { border:1px solid var(--line); background:#0e1821; border-radius:10px; padding:11px 12px; min-width:0; }
+    .info-card .field-label { margin-bottom:5px; }
+    .info-card p { color:#b7c8d5; font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
+    .toast { position:fixed; right:22px; bottom:22px; z-index:20; background:#17372f; color:#bdf6e3; border:1px solid #367963; padding:12px 15px; border-radius:11px; box-shadow:var(--shadow); font-size:13px; opacity:0; transform:translateY(8px); pointer-events:none; transition:.2s; max-width:min(440px,calc(100vw - 44px)); }
+    .toast.show { opacity:1; transform:translateY(0); }
+    .toast.error { background:#3a2028; border-color:#86434d; color:#ffd1d4; }
+    .footer-note { color:#73899a; text-align:center; font-size:10px; margin-top:20px; }
+    @media (max-width: 950px) { .workspace { grid-template-columns:1fr; } .controls { display:grid; grid-template-columns:1fr 1fr; gap:14px; } .mode-tabs,.active-task,.landmark-list,.hint,.actions,.save-area { grid-column:span 2; } .landmark-list { max-height:280px; grid-template-columns:1fr 1fr; } .save-area { margin-top:0; } }
+    @media (max-width: 600px) { .shell { padding:10px 12px 30px; } .library-heading { align-items:flex-start; flex-wrap:wrap; } .status-pill { padding:5px 8px; font-size:10px; } .topbar { grid-template-columns:1fr; } .top-meta { text-align:left; } .controls { display:block; } .landmark-list { grid-template-columns:1fr; max-height:250px; } .transport { grid-template-columns:auto 1fr auto; } .transport .frame-input { grid-column:span 2; } .secondary-info { grid-template-columns:1fr; } }
+  </style>
+  <link rel="stylesheet" href="/_portal/shared.css">
+</head>
+<body>
+  <div class="shell">
+    <section class="topbar">
+      <div>
+        <div class="library-heading">
+          <label class="field-label" for="videoSelect">Video library</label>
+          <div class="status-pill" id="connectionStatus">● Connected to video library</div>
+        </div>
+        <select id="videoSelect"><option value="">Loading videos…</option></select>
+      </div>
+      <div class="top-meta">
+        <div id="videoPath">Select a video to begin</div>
+        <div id="videoSpecs">Supported: MP4, MOV, MKV, AVI, WebM</div>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <aside class="panel">
+        <div class="panel-head">
+          <h2>Calibration points</h2>
+          <p>Select a point, then click its location in the video. Points can be repositioned at any time.</p>
+        </div>
+        <div class="controls">
+          <div class="mode-tabs">
+            <button class="active" data-mode="court" id="courtTab">Court · 10</button>
+            <button data-mode="net" id="netTab">Net · 2</button>
+          </div>
+          <div class="active-task">
+            <strong id="modeTitle">Court landmarks</strong>
+            <span class="counter" id="pointCounter">0 / 10 placed</span>
+          </div>
+          <div class="landmark-list" id="landmarkList"></div>
+          <div class="hint" id="hintText">Start with the near baseline, then work towards the far baseline. “Left” and “right” are from the camera's view of the court.</div>
+          <div class="actions">
+            <button class="btn" id="undoBtn" disabled>↶ Undo</button>
+            <button class="btn" id="resetBtn">Reset points</button>
+            <button class="btn blue" id="firstFrameBtn">↤ First frame</button>
+            <button class="btn" id="previewJsonBtn">View JSON</button>
+          </div>
+          <div class="save-area">
+            <button class="btn primary" id="saveBtn" disabled>Save court.json</button>
+            <p class="save-note" id="saveNote">Complete all points to enable saving. Files are written to the mounted output folder, mirroring the video's directory.</p>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel stage-panel">
+        <div class="stage-toolbar">
+          <div class="frame-meta">Reference frame <strong id="frameReadout">—</strong> <span id="timeReadout">· 00:00.000</span></div>
+          <span class="stage-badge" id="modeBadge">COURT CALIBRATION</span>
+        </div>
+        <div class="stage-wrap" id="stageWrap">
+          <div class="empty-state" id="emptyState">
+            <div><div class="empty-icon">◫</div><strong>Choose a video to load its first frame</strong><p style="font-size:12px;margin-top:7px">The drawing overlay will appear here.</p></div>
+          </div>
+          <video id="video" preload="metadata" playsinline></video>
+          <canvas id="overlay" aria-label="Click to place calibration landmarks"></canvas>
+        </div>
+        <div class="transport">
+          <button class="btn" id="playBtn" disabled title="Play or pause">▶</button>
+          <input id="timeline" type="range" min="0" max="0" value="0" disabled aria-label="Video frame timeline">
+          <div class="frame-input"><input id="frameInput" type="number" min="0" step="1" value="0" disabled aria-label="Frame number"><span id="frameTotal">/ —</span></div>
+          <button class="btn" id="prevFrameBtn" disabled title="Previous frame">−1</button>
+          <button class="btn" id="nextFrameBtn" disabled title="Next frame">+1</button>
+        </div>
+        <div class="secondary-info">
+          <div class="info-card"><span class="field-label">How to mark</span><p id="instructionText">Choose a landmark from the left, then click its position on the frame. Use the timeline or frame number to choose a clear reference image.</p></div>
+          <div class="info-card"><span class="field-label">Calibration output</span><p id="outputPreview">court.json will contain the 10 court landmarks, 1280 × 720 frame size, empty extra list and calculated RMSE in metres.</p></div>
+        </div>
+      </section>
+    </main>
+    <p class="footer-note">Coordinates are saved in original video pixels. For best results, use a stationary camera and choose a frame where the court markings are visible.</p>
+  </div>
+  <div class="toast" id="toast"></div>
+  <dialog id="jsonDialog" style="width:min(760px,calc(100vw - 28px));background:#101b25;color:#e9f1f7;border:1px solid #385064;border-radius:14px;padding:18px;box-shadow:0 20px 70px #0009">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px"><strong style="font:600 16px 'Space Grotesk',sans-serif">JSON preview</strong><button class="btn" id="closeJsonBtn">Close</button></div>
+    <pre id="jsonContent" style="white-space:pre-wrap;overflow:auto;max-height:65vh;background:#08121a;padding:14px;border-radius:9px;font-size:11px;color:#bde6d8"></pre>
+  </dialog>
+
+<script>
+(() => {
+  const COURT_POINTS = [
+    ['near_left', 'Near · left corner'],
+    ['near_right', 'Near · right corner'],
+    ['near_attack_left', 'Near attack · left'],
+    ['near_attack_right', 'Near attack · right'],
+    ['centre_left', 'Centre line · left'],
+    ['centre_right', 'Centre line · right'],
+    ['far_attack_left', 'Far attack · left'],
+    ['far_attack_right', 'Far attack · right'],
+    ['far_left', 'Far · left corner'],
+    ['far_right', 'Far · right corner'],
+  ];
+  const NET_POINTS = [
+    ['net_left', 'Net · left end'],
+    ['net_right', 'Net · right end'],
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    videos: [], videoId: '', metadata: null, mode: 'court',
+    court: {}, net: {}, activePoint: 'near_left', undo: [],
+    fps: 25, frameCount: 0, currentFrame: 0, isLoaded: false,
+  };
+  const video = $('video');
+  const canvas = $('overlay');
+  const ctx = canvas.getContext('2d');
+
+  function pointsForMode() { return state.mode === 'court' ? COURT_POINTS : NET_POINTS; }
+  function landmarksForMode() { return state.mode === 'court' ? state.court : state.net; }
+  function setLandmarksForMode(value) { if (state.mode === 'court') state.court = value; else state.net = value; }
+  function escaped(value) { return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function showToast(message, error = false) {
+    const toast = $('toast'); toast.textContent = message; toast.classList.toggle('error', error); toast.classList.add('show');
+    clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+  function currentPoints() { return landmarksForMode(); }
+  function selectedPointName() { return pointsForMode().find(p => p[0] === state.activePoint)?.[1] || ''; }
+  function completeCount() { return pointsForMode().filter(([name]) => currentPoints()[name]).length; }
+  function setStatus(text) { $('connectionStatus').textContent = text; }
+
+  async function loadVideos() {
+    try {
+      const response = await fetch('/api/videos');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json(); state.videos = data.videos || [];
+      const select = $('videoSelect'); select.innerHTML = '';
+      if (!state.videos.length) {
+        select.add(new Option('No videos found in mounted folder', ''));
+        $('videoPath').textContent = data.warning || `No supported video files found under ${data.video_root}`;
+        setStatus('● Video folder empty'); return;
+      }
+      select.add(new Option('Select a video…', ''));
+      for (const item of state.videos) select.add(new Option(item.relative_path, item.id));
+      setStatus(`● ${state.videos.length} video${state.videos.length === 1 ? '' : 's'} available`);
+    } catch (err) {
+      setStatus('● API connection error'); showToast(`Could not load video list: ${err.message}`, true);
+    }
+  }
+
+  async function selectVideo(videoId) {
+    if (!videoId) return;
+    const selected = state.videos.find(v => v.id === videoId);
+    if (!selected) return;
+    state.videoId = videoId; state.metadata = null; state.court = {}; state.net = {}; state.undo = []; state.isLoaded = false;
+    $('videoPath').textContent = selected.relative_path;
+    $('videoSpecs').textContent = `${(selected.size_bytes / (1024 * 1024)).toFixed(1)} MB · Loading metadata…`;
+    try {
+      const response = await fetch(`/api/videos/${encodeURIComponent(videoId)}/metadata`);
+      const meta = await response.json();
+      if (!response.ok) throw new Error(meta.detail || `HTTP ${response.status}`);
+      state.metadata = meta; state.fps = meta.fps; state.frameCount = meta.frame_count;
+      $('videoSpecs').textContent = `${meta.width} × ${meta.height} · ${meta.fps.toFixed(3)} FPS · ${meta.frame_count.toLocaleString()} frames`;
+      $('stageWrap').style.aspectRatio = `${meta.width} / ${meta.height}`;
+      $('emptyState').style.display = 'none';
+      canvas.width = meta.width; canvas.height = meta.height;
+      $('timeline').max = Math.max(0, meta.frame_count - 1);
+      $('timeline').value = 0; $('timeline').disabled = false;
+      $('frameInput').max = Math.max(0, meta.frame_count - 1); $('frameInput').value = 0; $('frameInput').disabled = false;
+      $('frameTotal').textContent = `/ ${Math.max(0, meta.frame_count - 1).toLocaleString()}`;
+      for (const id of ['playBtn','prevFrameBtn','nextFrameBtn','firstFrameBtn']) $(id).disabled = false;
+      video.src = `/api/videos/${encodeURIComponent(videoId)}/stream`;
+      video.load();
+      renderAll();
+    } catch (err) {
+      showToast(`Could not load video: ${err.message}`, true);
+    }
+  }
+
+  function updateFrameReadout() {
+    if (!state.metadata) return;
+    const frame = Math.max(0, Math.min(state.frameCount - 1, Math.round(video.currentTime * state.fps)));
+    state.currentFrame = frame;
+    $('frameReadout').textContent = `${frame.toLocaleString()} / ${Math.max(0, state.frameCount - 1).toLocaleString()}`;
+    $('timeReadout').textContent = `· ${formatTime(video.currentTime)}`;
+    $('timeline').value = frame;
+    if (document.activeElement !== $('frameInput')) $('frameInput').value = frame;
+    drawOverlay();
+  }
+  function formatTime(seconds) {
+    const ms = Math.floor((seconds % 1) * 1000); const total = Math.floor(seconds);
+    const mm = String(Math.floor(total / 60)).padStart(2, '0'); const ss = String(total % 60).padStart(2, '0');
+    return `${mm}:${ss}.${String(ms).padStart(3, '0')}`;
+  }
+  function seekToFrame(frame) {
+    if (!state.metadata) return;
+    const target = Math.max(0, Math.min(state.frameCount - 1, Math.round(Number(frame) || 0)));
+    video.pause(); video.currentTime = target / state.fps; state.currentFrame = target;
+    $('frameInput').value = target; $('timeline').value = target;
+    updatePlayButton();
+  }
+  function updatePlayButton() { $('playBtn').textContent = video.paused ? '▶' : 'Ⅱ'; }
+
+  function setMode(mode) {
+    state.mode = mode;
+    state.activePoint = pointsForMode().find(([name]) => !currentPoints()[name])?.[0] || pointsForMode()[0][0];
+    $('courtTab').classList.toggle('active', mode === 'court'); $('netTab').classList.toggle('active', mode === 'net');
+    $('modeTitle').textContent = mode === 'court' ? 'Court landmarks' : 'Net endpoints';
+    $('modeBadge').textContent = mode === 'court' ? 'COURT CALIBRATION' : 'NET CALIBRATION';
+    $('hintText').textContent = mode === 'court'
+      ? 'Start with the near baseline, then work towards the far baseline. “Left” and “right” are from the camera’s view of the court.'
+      : 'Mark the two ends of the visible top tape of the net (left end first, then right end). The exported net line joins these two points.';
+    $('instructionText').textContent = mode === 'court'
+      ? 'Click the 10 court landmarks in order. The centre pair should lie on the centre line at the net.'
+      : 'Click the left and right ends of the net tape. Choose a frame where both ends are visible.';
+    $('outputPreview').textContent = mode === 'court'
+      ? 'court.json includes the standard 10 landmarks and an RMSE in metres calculated against an 18 × 9 m volleyball court.'
+      : 'net.json includes net_left and net_right pixel coordinates. These define the visible net top-edge line.';
+    renderAll();
+  }
+
+  function renderList() {
+    const list = $('landmarkList'); list.innerHTML = '';
+    for (const [name, label] of pointsForMode()) {
+      const point = currentPoints()[name];
+      const button = document.createElement('button');
+      button.className = `landmark-row${point ? ' done' : ''}${name === state.activePoint ? ' active' : ''}`;
+      button.type = 'button';
+      const val = point ? `${point[0].toFixed(0)}, ${point[1].toFixed(0)}` : 'Not set';
+      button.innerHTML = `<span class="dot"></span><span class="landmark-name">${escaped(label)}</span><span class="landmark-value">${escaped(val)}</span>`;
+      button.addEventListener('click', () => { state.activePoint = name; renderAll(); });
+      list.appendChild(button);
+    }
+    $('pointCounter').textContent = `${completeCount()} / ${pointsForMode().length} placed`;
+  }
+
+  function renderButtons() {
+    $('undoBtn').disabled = state.undo.length === 0;
+    const complete = completeCount() === pointsForMode().length && state.isLoaded;
+    $('saveBtn').disabled = !complete;
+    $('saveBtn').textContent = `Save ${state.mode}.json`;
+    $('saveNote').textContent = complete
+      ? `Ready to save. Output: /output/<video folders>/<video name>/${state.mode}.json`
+      : `Place all ${pointsForMode().length} ${state.mode} points to enable saving. Your annotations remain in this browser while you switch modes.`;
+    $('previewJsonBtn').disabled = !state.isLoaded;
+  }
+  function renderAll() { renderList(); renderButtons(); drawOverlay(); }
+
+  function drawLine(points, names, color, width = 3, dash = []) {
+    const valid = names.map(name => points[name]).filter(Boolean);
+    if (valid.length < 2) return;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(valid[0][0], valid[0][1]);
+    for (let i = 1; i < valid.length; i++) ctx.lineTo(valid[i][0], valid[i][1]);
+    ctx.stroke(); ctx.restore();
+  }
+  function drawOverlay() {
+    if (!state.metadata) return;
+    const width = state.metadata.width, height = state.metadata.height;
+    if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
+    ctx.clearRect(0, 0, width, height);
+    if (state.court && Object.keys(state.court).length) {
+      const c = state.court;
+      const rows = [['near_left','near_right'],['near_attack_left','near_attack_right'],['centre_left','centre_right'],['far_attack_left','far_attack_right'],['far_left','far_right']];
+      rows.forEach((row, i) => drawLine(c, row, i === 2 ? '#ffcc66' : '#63d6b2', i === 2 ? 3 : 2, i === 2 ? [8,5] : []));
+      drawLine(c, ['near_left','near_attack_left','centre_left','far_attack_left','far_left'], '#63d6b2', 2);
+      drawLine(c, ['near_right','near_attack_right','centre_right','far_attack_right','far_right'], '#63d6b2', 2);
+      for (const [name, label] of COURT_POINTS) drawMarker(c[name], label, name === state.activePoint && state.mode === 'court');
+    }
+    if (state.net && Object.keys(state.net).length) {
+      drawLine(state.net, ['net_left','net_right'], '#6bb8ff', 4);
+      for (const [name, label] of NET_POINTS) drawMarker(state.net[name], label, name === state.activePoint && state.mode === 'net');
+    }
+  }
+  function drawMarker(point, label, active) {
+    if (!point) return;
+    const [x,y] = point;
+    ctx.save(); ctx.fillStyle = active ? '#ffca68' : '#54d6b0'; ctx.strokeStyle = '#06151a'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, active ? 8 : 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.font = '600 15px DM Sans, sans-serif'; const textWidth = ctx.measureText(label).width;
+    const bx = Math.min(Math.max(2, x + 11), canvas.width - textWidth - 17); const by = Math.max(19, y - 11);
+    ctx.fillStyle = 'rgba(3,12,18,.82)'; ctx.fillRect(bx - 4, by - 15, textWidth + 8, 20);
+    ctx.fillStyle = '#f1f7fa'; ctx.fillText(label, bx, by);
+    ctx.restore();
+  }
+
+  canvas.addEventListener('click', (event) => {
+    if (!state.metadata || !state.isLoaded) return;
+    video.pause(); updatePlayButton();
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * state.metadata.width / rect.width;
+    const y = (event.clientY - rect.top) * state.metadata.height / rect.height;
+    const points = currentPoints(); const old = points[state.activePoint] ? [...points[state.activePoint]] : null;
+    state.undo.push({ mode: state.mode, name: state.activePoint, old });
+    points[state.activePoint] = [Number(x.toFixed(2)), Number(y.toFixed(2))];
+    const next = pointsForMode().find(([name]) => !points[name]);
+    if (next) state.activePoint = next[0];
+    renderAll();
+  });
+
+  $('videoSelect').addEventListener('change', (e) => selectVideo(e.target.value));
+  $('courtTab').addEventListener('click', () => setMode('court'));
+  $('netTab').addEventListener('click', () => setMode('net'));
+  $('playBtn').addEventListener('click', async () => { if (!state.isLoaded) return; if (video.paused) { try { await video.play(); } catch (e) { showToast('Could not play video in this browser.', true); } } else video.pause(); updatePlayButton(); });
+  video.addEventListener('loadedmetadata', () => { state.isLoaded = true; seekToFrame(0); $('emptyState').style.display = 'none'; renderButtons(); });
+  video.addEventListener('timeupdate', updateFrameReadout);
+  video.addEventListener('seeked', updateFrameReadout);
+  video.addEventListener('play', updatePlayButton); video.addEventListener('pause', updatePlayButton);
+  $('timeline').addEventListener('input', (e) => seekToFrame(e.target.value));
+  $('frameInput').addEventListener('change', (e) => seekToFrame(e.target.value));
+  $('frameInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') seekToFrame(e.target.value); });
+  $('prevFrameBtn').addEventListener('click', () => seekToFrame(state.currentFrame - 1));
+  $('nextFrameBtn').addEventListener('click', () => seekToFrame(state.currentFrame + 1));
+  $('firstFrameBtn').addEventListener('click', () => seekToFrame(0));
+  $('undoBtn').addEventListener('click', () => {
+    const action = state.undo.pop(); if (!action) return;
+    const points = action.mode === 'court' ? state.court : state.net;
+    if (action.old) points[action.name] = action.old; else delete points[action.name];
+    state.mode = action.mode; state.activePoint = action.name; setMode(state.mode);
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!confirm(`Reset all ${state.mode} points?`)) return;
+    setLandmarksForMode({}); state.undo = []; state.activePoint = pointsForMode()[0][0]; renderAll();
+  });
+  $('saveBtn').addEventListener('click', async () => {
+    const payload = {
+      video_id: state.videoId, kind: state.mode,
+      frame_size: [state.metadata.width, state.metadata.height],
+      reference_frame: state.currentFrame,
+      landmarks: currentPoints(),
+    };
+    $('saveBtn').disabled = true; $('saveBtn').textContent = 'Saving…';
+    try {
+      const response = await fetch('/api/calibration', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
+      const blob = new Blob([JSON.stringify(data.document, null, 2) + '\n'], {type:'application/json'});
+      const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
+      anchor.href = url; anchor.download = `${state.mode}.json`; anchor.click(); URL.revokeObjectURL(url);
+      showToast(`${state.mode}.json saved to ${data.output_path} and downloaded.`);
+      $('saveNote').textContent = `Saved to /output/${data.output_path}`;
+      if (state.mode === 'court') $('outputPreview').textContent = `Saved court.json · RMSE ${data.document.rmse_m.toFixed(4)} m · ${data.output_path}`;
+      else $('outputPreview').textContent = `Saved net.json · ${data.output_path}`;
+    } catch (err) { showToast(`Save failed: ${err.message}`, true); }
+    finally { renderButtons(); }
+  });
+  $('previewJsonBtn').addEventListener('click', () => {
+    if (!state.metadata) return;
+    const names = pointsForMode().map(([name]) => name);
+    const document = { video: `../${state.metadata.relative_path}`, frame_size: [state.metadata.width, state.metadata.height], landmarks: Object.fromEntries(names.filter(n => currentPoints()[n]).map(n => [n, currentPoints()[n]])), extra: [] };
+    if (state.mode === 'court' && names.every(n => currentPoints()[n])) document.rmse_m = '(calculated when saved)';
+    $('jsonContent').textContent = JSON.stringify(document, null, 2);
+    $('jsonDialog').showModal();
+  });
+  $('closeJsonBtn').addEventListener('click', () => $('jsonDialog').close());
+  $('jsonDialog').addEventListener('click', (e) => { if (e.target === $('jsonDialog')) $('jsonDialog').close(); });
+
+  loadVideos(); setMode('court');
+})();
+</script>
+</body>
+</html>

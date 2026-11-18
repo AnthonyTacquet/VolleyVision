@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>VolleyVision</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="/_portal/path-prefix.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#0b1118;--panel:#111b25;--panel2:#162330;--line:#263847;--muted:#92a5b6;--text:#e9f1f7;--mint:#54d6b0;--acc:#54d6b0;--blue:#6bb8ff;--red:#ff7e84;--shadow:0 18px 50px rgba(0,0,0,.24)}
+*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{background:radial-gradient(ellipse at 75% -10%,#17364a 0,transparent 45%),var(--bg);color:var(--text);font:13px/1.5 'DM Sans',sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.shell{max-width:1640px;min-height:100vh;margin:auto;padding:24px clamp(14px,2.4vw,36px) 28px;display:grid;grid-template-rows:auto minmax(0,1fr);gap:16px}
+.app-header{display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:13px}.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#5be0b9,#3289c5);color:#07151a;font:700 22px 'Space Grotesk',sans-serif;box-shadow:0 8px 28px #43c9ac33}h1,h2,h3,p{margin:0}h1{font:700 24px/1.1 'Space Grotesk',sans-serif}.subtitle{margin-top:5px;color:var(--muted);font-size:12px}.header-meta{display:flex;align-items:center;gap:13px}.eyebrow{color:var(--mint);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.status-pill{border:1px solid #2c514d;color:#93e8d0;background:#102b2a;padding:7px 11px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap}
+.topbar{display:grid;grid-template-columns:minmax(220px,1fr) auto minmax(180px,auto);gap:14px;align-items:end;background:rgba(17,27,37,.9);border:1px solid var(--line);border-radius:15px;padding:13px 15px;box-shadow:var(--shadow)}.field-label{display:block;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}.topbar select,select,input[type=number]{min-height:38px;padding:8px 10px;color:var(--text);background:#0d1720;border:1px solid #304555;border-radius:8px;outline:none}.topbar select{width:100%;min-width:0}.topbar select:focus,select:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #6bb8ff18}.stats{color:var(--muted);font-size:11px;text-align:right;overflow-wrap:anywhere}.stats b{color:var(--text)}
+.workspace{display:grid;grid-template-columns:minmax(300px,350px) minmax(0,1fr);gap:16px;align-items:stretch;min-height:0}.panel{background:rgba(17,27,37,.94);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:15px 17px 12px;border-bottom:1px solid var(--line)}.panel-head h2{font:600 15px 'Space Grotesk',sans-serif}.panel-head p{margin-top:4px;color:var(--muted);font-size:11px}.panel-body{padding:13px 15px;overflow:auto}.panel-body h3{font:700 10px 'DM Sans',sans-serif;color:var(--mint);letter-spacing:.09em;text-transform:uppercase;margin:16px 0 7px}.panel-body h3:first-of-type{margin-top:13px}.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:7px 0}.row input[type=range]{flex:1;min-width:70px}.row input[type=number]{padding:5px 7px;min-height:32px}.row select{min-height:32px;padding:5px 7px}.mut{color:var(--muted);font-size:11px;line-height:1.55}.mut b{color:var(--text)}
+.btn,button{display:inline-flex;justify-content:center;align-items:center;gap:6px;min-height:34px;border:1px solid #354b5c;border-radius:8px;color:var(--text);background:#1a2a38;padding:6px 10px;font-size:11px;font-weight:700;transition:filter .15s,border-color .15s,transform .15s}.btn:hover,button:hover{border-color:#5d8a99;filter:brightness(1.1)}button:active,.btn:active{transform:translateY(1px)}.btn.primary{color:#071a17;border-color:#4dd0ad;background:linear-gradient(135deg,#68e3bc,#42c5a0)}.btn.upload{white-space:nowrap}.btn input{display:none}input[type=range]{accent-color:var(--mint);cursor:pointer}input[type=checkbox]{accent-color:var(--mint)}kbd{background:#0b151e;border:1px solid #304555;border-radius:4px;padding:1px 5px;color:#c5d6e2;font:10px 'DM Sans',sans-serif}#evbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ev{display:flex;width:auto;margin:0}.evb{width:100%;justify-content:space-between;text-align:left;border-left:4px solid;padding:6px 8px}.evb.on{background:#17342f;outline:1px solid var(--mint)}
+#evlist{max-height:190px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#0e1821}.evr{display:flex;gap:7px;padding:6px 8px;cursor:pointer;align-items:center;font-size:11px}.evr:hover{background:#162632}.evr.cur{background:#17342f}.dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%}.x{margin-left:auto!important;color:#ff9da2!important;border:0!important;background:none!important;min-height:22px!important;padding:2px 6px!important}.warn{background:#392c1c;border:1px solid #5b492d;color:#f4d49b;border-radius:8px;padding:8px 9px;margin:7px 0;font-size:11px}.warn:empty{display:none}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b151e;border:1px solid var(--line);padding:8px;border-radius:8px;font-size:10px;color:#b8cbd7}.panel-body a{color:var(--mint)}
+#main{display:flex;flex-direction:column;min-width:0;min-height:0}.stage-toolbar{padding:12px 15px;background:rgba(17,27,37,.94);border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}.stage-toolbar b{font:600 13px 'Space Grotesk',sans-serif;overflow-wrap:anywhere}.stage-toolbar .mut{font-size:11px}.stage-toolbar #status{margin-left:auto;color:#93e8d0;font-size:11px}.stage-toolbar #status.bad{color:var(--red)}#stage{flex:1;position:relative;min-height:260px;background:#05090d}canvas{display:block}#cv{position:absolute;inset:0;width:100%;height:100%}.timeline-wrap{height:82px;flex:0 0 82px;background:#070c11;border-top:1px solid var(--line)}#tl{width:100%;height:100%;cursor:pointer}.footer-note{color:#73899a;text-align:center;font-size:10px;padding:8px 12px;border-top:1px solid var(--line)}
+@media(max-width:900px){.shell{min-height:100vh}.workspace{grid-template-columns:minmax(260px,310px) minmax(0,1fr)}.topbar{grid-template-columns:minmax(0,1fr) auto}.stats{grid-column:1/-1;text-align:left}}
+@media(max-width:700px){.shell{display:block;padding:16px 12px 22px}.app-header{margin-bottom:13px}.header-meta .eyebrow{display:none}.topbar{grid-template-columns:minmax(0,1fr) auto;margin-bottom:13px}.stats{grid-column:1/-1}.workspace{display:flex;flex-direction:column}.panel-body{max-height:none}.panel#side{overflow:visible}.panel#main{min-height:480px}.stage-toolbar{padding:10px 12px}.stage-toolbar #status{margin-left:0}.stage-toolbar{gap:7px}#stage{min-height:300px}.footer-note{padding:12px 4px}}
+@media(max-width:440px){h1{font-size:20px}.brand-mark{width:38px;height:38px}.status-pill{display:none}.topbar{grid-template-columns:1fr auto;padding:11px}.topbar .field-label{margin-bottom:4px}.panel-body{padding:11px 12px}#evbtns{grid-template-columns:1fr 1fr}}
+.section-title{display:flex;align-items:center;gap:7px}
+.help-icon{position:relative;width:18px;height:18px;min-height:18px;padding:0;border-radius:50%;background:#1a2a38;color:#b8cbd7;font:600 11px/1 'Roboto Mono',monospace;cursor:help}
+#stage{flex:0 0 auto;width:100%;height:auto;min-height:0;max-width:100%;aspect-ratio:16/9;margin-inline:auto}
+@media(max-width:700px){#stage{min-height:0}}
+</style><link rel="stylesheet" href="/_portal/shared.css"></head><body>
+<div class="shell">
+  <section class="topbar">
+    <div><label class="field-label" for="vsel">Video library <button class="help-icon" type="button" title="Choose a clip to label. Use Upload video to add a supported video file to the shared library." aria-label="Video library help">i</button></label><select id="vsel"></select></div>
+    <label class="btn upload" title="Add a video to the shared library">Upload video<input id="up" type="file" accept="video/*" hidden></label>
+    <div id="stats" class="stats mut"></div>
+  </section>
+  <main class="workspace">
+    <aside id="side" class="panel">
+      <div class="panel-body">
+  <h3 class="section-title">Ball<button class="help-icon" type="button" title="Click the ball center to label this frame. Press V when it is not visible; Backspace deletes the label. Adjust box size and auto-advance below." aria-label="Ball labeling help">i</button></h3>
+  <div class="row">box size <input id="size" type="range" min="4" max="60" value="16" style="flex:1"><span id="sizev">16</span>px</div>
+  <div class="row">auto-advance <select id="step"><option>1</option><option>2</option><option>3</option><option>5</option><option>10</option></select> frames
+  &nbsp;interpolate gaps ≤ <select id="gap"><option>0</option><option>2</option><option selected>4</option><option>6</option><option>10</option></select></div>
+  <div class="row"><button id="sugbtn">Suggestions (S)</button><span class="mut" id="sugmsg"></span></div>
+  <h3 class="section-title">Events<button class="help-icon" type="button" title="Set the duration in frames, then choose an event or press 1-7. The duration starts on the selected contact frame. Drag a box around the player, click to mark a point, or press Enter to save without a location." aria-label="Event labeling help">i</button></h3>
+  <div class="row"><label for="evdur">duration</label> <input id="evdur" type="number" min="1" step="1" value="5" style="width:68px"> frames</div>
+  <div id="evbtns"></div>
+  <h3 class="section-title">Labelled events<button class="help-icon" type="button" title="Select an event to jump to its frame. Use the x button to remove it." aria-label="Labelled events help">i</button></h3><div id="evlist"></div>
+
+  <h3 class="section-title">Export for training<button class="help-icon" type="button" title="Export creates a YOLO dataset and event CSV. Validation blocks separate nearby frames; player crops are optional." aria-label="Export help">i</button></h3>
+  <div class="row">val block <input id="vblock" type="number" value="90" style="width:62px"> every <input id="vevery" type="number" value="6" style="width:46px"></div>
+  <div class="row"><label><input type="checkbox" id="crops" checked> player crops for action classifier</label></div>
+  <div class="row"><button id="exp">Export dataset</button><span id="expmsg" class="mut"></span></div><div id="expres"></div>
+
+  <h3 class="section-title">Shortcuts<button class="help-icon" type="button" title="Left/Right: step one frame; Shift: step ten; Space: play. Brackets jump between events. Wheel zooms; right- or middle-drag pans; 0 fits the video; Ctrl+Z undoes." aria-label="Keyboard shortcuts help">i</button></h3>
+      </div>
+    </aside>
+    <section id="main" class="panel">
+      <div id="bar" class="stage-toolbar"><b id="vname">–</b><span id="fi"></span><span id="ti" class="mut"></span><span id="armed"></span>
+        <label class="mut">speed <select id="speed"><option value="0.25">0.25×</option><option value="0.5" selected>0.5×</option><option value="1">1×</option></select></label>
+        <button class="btn" id="alignBtn" type="button" title="Recenter and fit the video to its original framing">Align video</button>
+        <span id="status" style="margin-left:auto">–</span></div>
+      <div id="stage"><canvas id="cv"></canvas></div>
+      <div class="timeline-wrap"><canvas id="tl"></canvas></div>
+    </section>
+  </main>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const EV = [['1','serve','Serve','#ffd200'],['2','reception','Reception','#2ecc71'],['3','dig','Dig','#ff9f1a'],['4','set','Set','#32b4ff'],
+            ['5','attack','Spike / attack','#ff3b30'],['6','block','Block','#c05cff'],['7','bounce','Ball hits floor','#aaaaaa']];
+const DEFAULT_EVENT_DURATION = 5;
+const COL = Object.fromEntries(EV.map(e => [e[1], e[3]])), KEY = Object.fromEntries(EV.map(e => [e[0], e[1]]));
+const S = {name:null, meta:null, doc:null, f:0, img:null, scale:1, ox:0, oy:0, armed:null, drag:null, pan:null, mouse:null, spaceDown:false,
+           playing:false, showSug:false, sug:null, sugFrame:-1, undo:[], saveT:null, keys:[], lastDir:1, canSuggest:false};
+const cv = $('#cv'), ctx = cv.getContext('2d'), tl = $('#tl'), tctx = tl.getContext('2d');
+const cache = new Map();
+
+// ---------------------------------------------------------------- helpers
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const size = () => +$('#size').value, step = () => +$('#step').value, maxGap = () => +$('#gap').value;
+const eventDuration = e => {
+  const value = Number(e.duration);
+  return Number.isFinite(value) ? Math.max(1, Math.floor(value)) : DEFAULT_EVENT_DURATION;
+};
+const fmt = f => (f / S.meta.fps).toFixed(2) + 's';
+function status(t, bad) { const s = $('#status'); s.textContent = t; s.className = bad ? 'bad' : ''; }
+
+function getFrame(f) {
+  const k = S.name + '|' + f;
+  if (!cache.has(k)) {
+    const p = fetch(`/api/frame/${encodeURIComponent(S.name)}/${f}.jpg`).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(createImageBitmap);
+    cache.set(k, p);
+    if (cache.size > 160) cache.delete(cache.keys().next().value);
+  }
+  return cache.get(k);
+}
+
+// ---------------------------------------------------------------- load
+async function loadList(keep) {
+  const r = await (await fetch('/api/videos')).json();
+  S.canSuggest = r.can_suggest;
+  const sel = $('#vsel'); const cur = keep || sel.value;
+  sel.innerHTML = r.videos.map(v => `<option value="${v.name}">${v.name} · ${v.ball_labels} ball · ${v.events} ev</option>`).join('');
+  if (!r.videos.length) { status('put videos in the videos/ folder or use Upload'); return; }
+  if (cur && r.videos.some(v => v.name === cur)) sel.value = cur;
+  if (S.name !== sel.value) await openVideo(sel.value);
+}
+
+async function openVideo(name) {
+  await flush();
+  const meta = await (await fetch('/api/meta/' + encodeURIComponent(name))).json();
+  const doc = await (await fetch('/api/labels/' + encodeURIComponent(name))).json();
+  doc.ball = doc.ball || {}; doc.events = doc.events || [];
+  S.name = name; cache.clear(); S.undo = []; S.sug = null; S.img = null; S.meta = meta; S.doc = doc;
+  if (S.doc.meta && S.doc.meta.ball_size) { $('#size').value = S.doc.meta.ball_size; $('#sizev').textContent = S.doc.meta.ball_size; }
+  $('#vname').textContent = name; $('#vsel').value = name;
+  rebuildKeys(); renderEvents(); renderStats(); resize();
+  await goto(+(localStorage.getItem('vl:' + name) || 0));
+  status('loaded');
+}
+
+function rebuildKeys() { S.keys = Object.keys(S.doc.ball).map(Number).sort((a, b) => a - b); }
+
+// ---------------------------------------------------------------- view
+function resize() {
+  const st = $('#stage'), d = devicePixelRatio || 1;
+  if (S.meta) {
+    const main = $('#main');
+    const chrome = $('#bar').offsetHeight + $('.timeline-wrap').offsetHeight + 20;
+    const maxHeight = Math.max(180, Math.min(window.innerHeight * 0.68, main.clientHeight - chrome));
+    const aspect = S.meta.w / S.meta.h;
+    const width = Math.min(main.clientWidth, maxHeight * aspect);
+    st.style.width = `${width}px`;
+    st.style.height = `${width / aspect}px`;
+  } else {
+    st.style.width = '100%';
+    st.style.height = 'auto';
+  }
+  cv.width = st.clientWidth * d; cv.height = st.clientHeight * d;
+  tl.width = tl.clientWidth * d; tl.height = tl.clientHeight * d;
+  if (S.meta) fitView(); drawAll();
+}
+function fitView() {
+  if (!S.meta) return;
+  const s = Math.min(cv.width / S.meta.w, cv.height / S.meta.h);
+  S.scale = s; S.base = s; S.ox = (cv.width - S.meta.w * s) / 2; S.oy = (cv.height - S.meta.h * s) / 2;
+}
+const toImg = (mx, my) => [(mx - S.ox) / S.scale, (my - S.oy) / S.scale];
+const toScr = (x, y) => [S.ox + x * S.scale, S.oy + y * S.scale];
+function mpos(e) { const r = cv.getBoundingClientRect(), d = cv.width / r.width; return [(e.clientX - r.left) * d, (e.clientY - r.top) * d]; }
+
+// ---------------------------------------------------------------- navigation
+async function goto(f) {
+  if (!S.meta) return;
+  f = clamp(Math.round(f), 0, Math.max(0, S.meta.n - 1));
+  S.lastDir = f >= S.f ? 1 : -1; S.f = f;
+  localStorage.setItem('vl:' + S.name, f);
+  updateBar(); drawAll(); fetchSuggestions();
+  try { const bm = await getFrame(f); if (S.f === f) { S.img = bm; drawAll(); } } catch (e) { status('frame error ' + e.message, true); }
+  for (let k = 1; k <= 6; k++) { const n = f + S.lastDir * k; if (n >= 0 && n < S.meta.n) getFrame(n).catch(() => {}); }
+}
+function updateBar() { $('#fi').textContent = `frame ${S.f} / ${S.meta.n - 1}`; $('#ti').textContent = fmt(S.f); }
+
+async function playLoop() {
+  const sp = +$('#speed').value;
+  while (S.playing && S.f < S.meta.n - 1) {
+    const t0 = performance.now();
+    await goto(S.f + 1);
+    const wait = 1000 / (S.meta.fps * sp) - (performance.now() - t0);
+    if (wait > 0) await new Promise(r => setTimeout(r, wait));
+  }
+  S.playing = false;
+}
+
+// ---------------------------------------------------------------- labels
+function pushUndo() { S.undo.push(JSON.stringify({ball: S.doc.ball, events: S.doc.events})); if (S.undo.length > 150) S.undo.shift(); }
+function undo() {
+  const s = S.undo.pop(); if (!s) return;
+  const o = JSON.parse(s); S.doc.ball = o.ball; S.doc.events = o.events;
+  rebuildKeys(); renderEvents(); renderStats(); drawAll(); dirty();
+}
+function dirty() { status('saving…'); clearTimeout(S.saveT); S.saveT = setTimeout(save, 500); }
+async function save() {
+  clearTimeout(S.saveT); S.saveT = null;
+  S.doc.meta = Object.assign(S.doc.meta || {}, {ball_size: size()});
+  try {
+    const r = await fetch('/api/labels/' + encodeURIComponent(S.name), {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(S.doc), keepalive: true});
+    if (!r.ok) throw new Error(r.status);
+    S.doc.rev = (await r.json()).rev; status('saved ✓');
+  } catch (e) { status('SAVE FAILED – ' + e.message, true); }
+}
+async function flush() { if (S.saveT) await save(); }
+
+function placeBall(x, y, s, keep) {
+  pushUndo();
+  S.doc.ball[S.f] = {x: +x.toFixed(1), y: +y.toFixed(1), v: 1, s: s || size()};
+  rebuildKeys(); renderStats(); dirty();
+  if (!keep) goto(S.f + step()); else drawAll();
+}
+function notVisible() { pushUndo(); S.doc.ball[S.f] = {v: 0}; rebuildKeys(); renderStats(); dirty(); goto(S.f + step()); }
+function deleteBall() { if (!(S.f in S.doc.ball)) return; pushUndo(); delete S.doc.ball[S.f]; rebuildKeys(); renderStats(); dirty(); drawAll(); }
+
+function addEvent(type, loc) {
+  pushUndo();
+  const value = $('#evdur').valueAsNumber;
+  const duration = Number.isFinite(value) ? Math.max(1, Math.floor(value)) : DEFAULT_EVENT_DURATION;
+  const e = Object.assign({id: Date.now() % 1e9 + Math.floor(Math.random() * 1000), frame: S.f, duration, type}, loc);
+  S.doc.events.push(e); S.doc.events.sort((a, b) => a.frame - b.frame);
+  S.armed = null; renderEvents(); renderStats(); renderArmed(); dirty(); drawAll();
+}
+function delEvent(id) { pushUndo(); S.doc.events = S.doc.events.filter(e => e.id !== id); renderEvents(); renderStats(); dirty(); drawAll(); }
+function arm(t) { S.armed = S.armed === t ? null : t; renderArmed(); drawAll(); }
+
+function interpAt(f) {
+  if (f in S.doc.ball || !S.keys.length || maxGap() < 2) return null;
+  let lo = 0, hi = S.keys.length - 1;
+  if (f < S.keys[0] || f > S.keys[hi]) return null;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; (S.keys[m] < f ? lo = m : hi = m); }
+  const a = S.keys[lo], b = S.keys[hi], A = S.doc.ball[a], B = S.doc.ball[b];
+  if (!(a < f && f < b) || !A.v || !B.v || b - a > maxGap()) return null;
+  const t = (f - a) / (b - a);
+  return {x: A.x + (B.x - A.x) * t, y: A.y + (B.y - A.y) * t, s: A.s + (B.s - A.s) * t};
+}
+
+// ---------------------------------------------------------------- suggestions (optional model)
+let sugT = null;
+function fetchSuggestions() {
+  if (!S.showSug || !S.canSuggest) return;
+  clearTimeout(sugT);
+  const f = S.f;
+  sugT = setTimeout(async () => {
+    try {
+      const r = await fetch(`/api/suggest/${encodeURIComponent(S.name)}/${f}`);
+      if (!r.ok) { $('#sugmsg').textContent = 'unavailable'; return; }
+      S.sug = await r.json(); S.sugFrame = f; $('#sugmsg').textContent = `${S.sug.balls.length} ball candidates`; drawAll();
+    } catch (e) {}
+  }, 180);
+}
+
+// ---------------------------------------------------------------- drawing
+function drawAll() { drawFrame(); drawTimeline(); }
+function drawFrame() {
+  const W = cv.width, H = cv.height;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  if (!S.meta) return;
+  ctx.imageSmoothingEnabled = S.scale < 3;
+  if (S.img) ctx.drawImage(S.img, S.ox, S.oy, S.meta.w * S.scale, S.meta.h * S.scale);
+  const d = devicePixelRatio || 1;
+  // ball trail (previous labelled frames)
+  let prev = null;
+  for (let g = S.f - 14; g <= S.f; g++) {
+    const L = S.doc.ball[g]; if (!L || !L.v) { prev = null; continue; }
+    const [sx, sy] = toScr(L.x, L.y);
+    if (prev) { ctx.strokeStyle = 'rgba(0,255,255,.5)'; ctx.lineWidth = d; ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(sx, sy); ctx.stroke(); }
+    if (g < S.f) { ctx.fillStyle = 'rgba(0,255,255,.7)'; ctx.beginPath(); ctx.arc(sx, sy, 2.5 * d, 0, 7); ctx.fill(); }
+    prev = [sx, sy];
+  }
+  const L = S.doc.ball[S.f];
+  if (L && L.v) {
+    const [sx, sy] = toScr(L.x, L.y), r = L.s * S.scale / 2;
+    ctx.strokeStyle = '#ff3b30'; ctx.lineWidth = 2 * d; ctx.strokeRect(sx - r, sy - r, 2 * r, 2 * r);
+    ctx.beginPath(); ctx.moveTo(sx - r - 8 * d, sy); ctx.lineTo(sx - r, sy); ctx.moveTo(sx + r, sy); ctx.lineTo(sx + r + 8 * d, sy);
+    ctx.moveTo(sx, sy - r - 8 * d); ctx.lineTo(sx, sy - r); ctx.moveTo(sx, sy + r); ctx.lineTo(sx, sy + r + 8 * d); ctx.stroke();
+  } else if (L && !L.v) {
+    ctx.fillStyle = 'rgba(255,59,48,.85)'; ctx.font = `${14 * d}px system-ui`; ctx.fillText('BALL NOT VISIBLE (negative example)', 14 * d, 28 * d);
+  } else {
+    const I = interpAt(S.f);
+    if (I) {
+      const [sx, sy] = toScr(I.x, I.y), r = I.s * S.scale / 2;
+      ctx.setLineDash([5 * d, 4 * d]); ctx.strokeStyle = '#ffa31a'; ctx.lineWidth = 2 * d; ctx.strokeRect(sx - r, sy - r, 2 * r, 2 * r); ctx.setLineDash([]);
+      ctx.fillStyle = '#ffa31a'; ctx.font = `${11 * d}px system-ui`; ctx.fillText('interpolated', sx + r + 4 * d, sy);
+    }
+  }
+  // suggestions
+  if (S.showSug && S.sug && S.sugFrame === S.f) {
+    ctx.lineWidth = d;
+    for (const p of S.sug.persons) { const [a, b] = toScr(p.box[0], p.box[1]), [c, e] = toScr(p.box[2], p.box[3]); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.strokeRect(a, b, c - a, e - b); }
+    for (const b of S.sug.balls) { const [sx, sy] = toScr(b.x, b.y); ctx.strokeStyle = '#ffee00'; ctx.beginPath(); ctx.arc(sx, sy, Math.max(8 * d, b.s * S.scale / 2 + 3 * d), 0, 7); ctx.stroke();
+      ctx.fillStyle = '#ffee00'; ctx.font = `${10 * d}px system-ui`; ctx.fillText(b.conf.toFixed(2), sx + 10 * d, sy - 8 * d); }
+  }
+  // events active on this frame
+  for (const e of S.doc.events) {
+    const elapsed = S.f - e.frame, now = elapsed >= 0 && elapsed < eventDuration(e);
+    if (!now) continue;
+    const c = COL[e.type] || '#fff'; ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = (elapsed === 0 ? 3 : 1.5) * d;
+    if (e.bbox) { const [a, b] = toScr(e.bbox[0], e.bbox[1]), [x2, y2] = toScr(e.bbox[2], e.bbox[3]); ctx.strokeRect(a, b, x2 - a, y2 - b); ctx.font = `${13 * d}px system-ui`; ctx.fillText(e.type.toUpperCase() + (elapsed ? ` (+${elapsed})` : ''), a, b - 5 * d); }
+    else if (e.point) { const [a, b] = toScr(e.point[0], e.point[1]); ctx.beginPath(); ctx.arc(a, b, 9 * d, 0, 7); ctx.stroke(); ctx.fillText(e.type.toUpperCase(), a + 12 * d, b); }
+    else if (now) { ctx.font = `${16 * d}px system-ui`; ctx.fillText('EVENT: ' + e.type.toUpperCase(), 14 * d, 52 * d); }
+  }
+  if (S.drag) { ctx.strokeStyle = COL[S.armed]; ctx.lineWidth = 2 * d; ctx.setLineDash([6 * d, 4 * d]); const [a, b, c, e] = S.drag; ctx.strokeRect(a, b, c - a, e - b); ctx.setLineDash([]); }
+  // reticle
+  if (S.mouse && !S.armed && !S.pan) {
+    const [mx, my] = S.mouse, r = size() * S.scale / 2; ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = d; ctx.strokeRect(mx - r, my - r, 2 * r, 2 * r);
+    ctx.beginPath(); ctx.moveTo(mx - 20 * d, my); ctx.lineTo(mx + 20 * d, my); ctx.moveTo(mx, my - 20 * d); ctx.lineTo(mx, my + 20 * d); ctx.stroke();
+  }
+}
+
+function drawTimeline() {
+  const W = tl.width, H = tl.height, d = devicePixelRatio || 1;
+  tctx.setTransform(1, 0, 0, 1, 0, 0); tctx.fillStyle = '#0c0f13'; tctx.fillRect(0, 0, W, H);
+  if (!S.meta || !S.doc) return;
+  const n = Math.max(1, S.meta.n), X = f => f / n * W;
+  for (let i = 0; i < S.keys.length - 1; i++) {                               // interpolatable stretches
+    const a = S.keys[i], b = S.keys[i + 1], A = S.doc.ball[a], B = S.doc.ball[b];
+    if (A.v && B.v && b - a > 1 && b - a <= maxGap()) { tctx.fillStyle = '#6b5a2a'; tctx.fillRect(X(a), 14 * d, Math.max(1, X(b) - X(a)), 10 * d); }
+  }
+  for (const k of S.keys) { tctx.fillStyle = S.doc.ball[k].v ? '#2ecc71' : '#ff453a'; tctx.fillRect(X(k), 14 * d, Math.max(1.5 * d, W / n), 10 * d); }
+  for (const e of S.doc.events) {
+    tctx.fillStyle = COL[e.type] || '#fff';
+    const start = X(e.frame), end = X(Math.min(n, e.frame + eventDuration(e)));
+    tctx.fillRect(start, 32 * d, Math.max(2 * d, end - start), 34 * d);
+  }
+  tctx.fillStyle = '#8b96a5'; tctx.font = `${10 * d}px system-ui`; tctx.fillText('ball labels', 4 * d, 11 * d); tctx.fillText('events', 4 * d, 30 * d);
+  tctx.fillStyle = '#fff'; tctx.fillRect(X(S.f), 0, 2 * d, H);
+}
+
+// ---------------------------------------------------------------- sidebar
+function renderArmed() {
+  document.querySelectorAll('.evb').forEach(b => b.classList.toggle('on', b.dataset.t === S.armed));
+  $('#armed').textContent = S.armed ? `▶ ${S.armed}` : '';
+  $('#armed').style.color = S.armed ? COL[S.armed] : '';
+}
+function renderEvents() {
+  const el = $('#evlist');
+  el.innerHTML = S.doc.events.map(e => `<div class="evr ${e.frame === S.f ? 'cur' : ''}" data-f="${e.frame}"><span class="dot" style="background:${COL[e.type]}"></span>${e.type}
+    <span class="mut">f${e.frame} · ${fmt(e.frame)} · ${eventDuration(e)}f${e.bbox ? '' : e.point ? ' · pt' : ' · no loc'}</span><button class="x" data-id="${e.id}">✕</button></div>`).join('') || '<div class="mut" style="padding:8px">none yet</div>';
+}
+function renderStats() {
+  const vis = S.keys.filter(k => S.doc.ball[k].v).length, neg = S.keys.length - vis, c = {};
+  S.doc.events.forEach(e => c[e.type] = (c[e.type] || 0) + 1);
+  $('#stats').innerHTML = `ball: <b>${vis}</b> labelled, <b>${neg}</b> not visible · events: ` + (Object.entries(c).map(([k, v]) => `${k} ${v}`).join(', ') || 'none');
+}
+
+// ---------------------------------------------------------------- input
+cv.addEventListener('contextmenu', e => e.preventDefault());
+cv.addEventListener('mousedown', e => {
+  const [mx, my] = mpos(e);
+  if (e.button === 1 || e.button === 2) { S.pan = [mx, my, S.ox, S.oy]; return; }
+  if (e.button !== 0) return;
+  if (S.armed) S.drag = [mx, my, mx, my]; else S.down = [mx, my, e.shiftKey];
+});
+window.addEventListener('mousemove', e => {
+  if (!S.meta) return; const [mx, my] = mpos(e); S.mouse = [mx, my];
+  if (S.pan) { S.ox = S.pan[2] + mx - S.pan[0]; S.oy = S.pan[3] + my - S.pan[1]; }
+  if (S.drag) { S.drag[2] = mx; S.drag[3] = my; }
+  drawFrame();
+});
+window.addEventListener('mouseup', e => {
+  if (S.pan) { S.pan = null; return; }
+  const [mx, my] = mpos(e);
+  if (S.drag) {
+    const [a, b] = toImg(S.drag[0], S.drag[1]), [c, d2] = toImg(mx, my), moved = Math.hypot(mx - S.drag[0], my - S.drag[1]);
+    S.drag = null; const t = S.armed;
+    if (moved > 8) addEvent(t, {bbox: [Math.min(a, c), Math.min(b, d2), Math.max(a, c), Math.max(b, d2)].map(v => +v.toFixed(1))});
+    else {
+      const sp = S.sug && S.showSug && S.sugFrame === S.f ? S.sug.persons.find(p => a >= p.box[0] && a <= p.box[2] && b >= p.box[1] && b <= p.box[3]) : null;
+      addEvent(t, sp ? {bbox: sp.box.map(v => +v.toFixed(1))} : {point: [+a.toFixed(1), +b.toFixed(1)]});
+    }
+    return;
+  }
+  if (S.down) {
+    const [dx, dy, shift] = S.down; S.down = null;
+    if (Math.hypot(mx - dx, my - dy) > 6) return;
+    const r = cv.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+    let [x, y] = toImg(mx, my), s = size();
+    if (S.sug && S.showSug && S.sugFrame === S.f) {                              // snap to a suggested ball if one is close
+      const near = S.sug.balls.map(b => [Math.hypot(b.x - x, b.y - y), b]).sort((p, q) => p[0] - q[0])[0];
+      if (near && near[0] * S.scale < 14 * (devicePixelRatio || 1)) { x = near[1].x; y = near[1].y; s = Math.max(size(), near[1].s); }
+    }
+    if (x < 0 || y < 0 || x > S.meta.w || y > S.meta.h) return;
+    placeBall(x, y, s, shift);
+  }
+});
+cv.addEventListener('wheel', e => {
+  e.preventDefault(); const [mx, my] = mpos(e), f = e.deltaY < 0 ? 1.18 : 1 / 1.18, ns = clamp(S.scale * f, S.base * 0.9, S.base * 24);
+  S.ox = mx - (mx - S.ox) * ns / S.scale; S.oy = my - (my - S.oy) * ns / S.scale; S.scale = ns; drawFrame();
+}, {passive: false});
+cv.addEventListener('mouseleave', () => { S.mouse = null; drawFrame(); });
+
+let tlDown = false;
+const tlSeek = e => { const r = tl.getBoundingClientRect(); goto((e.clientX - r.left) / r.width * S.meta.n); };
+tl.addEventListener('mousedown', e => { tlDown = true; tlSeek(e); });
+window.addEventListener('mousemove', e => { if (tlDown) tlSeek(e); });
+window.addEventListener('mouseup', () => { tlDown = false; });
+
+window.addEventListener('keydown', e => {
+  if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName) && e.target.type !== 'range') return;
+  if (!S.meta) return;
+  const k = e.key;
+  if ((e.ctrlKey || e.metaKey) && k.toLowerCase() === 'z') { e.preventDefault(); undo(); return; }
+  if ((e.ctrlKey || e.metaKey) && k.toLowerCase() === 's') { e.preventDefault(); save(); return; }
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (k === ' ') { e.preventDefault(); if (!e.repeat) { S.playing = !S.playing; if (S.playing) playLoop(); } return; }
+  if (k === 'ArrowRight' || k === 'd' || k === 'D') { e.preventDefault(); S.playing = false; goto(S.f + (e.shiftKey ? 10 : 1)); }
+  else if (k === 'ArrowLeft' || k === 'a' || k === 'A') { e.preventDefault(); S.playing = false; goto(S.f - (e.shiftKey ? 10 : 1)); }
+  else if (k === 'Home') goto(0); else if (k === 'End') goto(S.meta.n - 1);
+  else if (k in KEY) arm(KEY[k]);
+  else if (k === 'Enter' && S.armed) addEvent(S.armed, {});
+  else if (k === 'Escape') { S.armed = null; S.drag = null; renderArmed(); drawAll(); }
+  else if (k === 'v' || k === 'V') notVisible();
+  else if (k === 'Backspace' || k === 'Delete') { e.preventDefault(); deleteBall(); }
+  else if (k === 's' || k === 'S') toggleSug();
+  else if (k === '0') { fitView(); drawFrame(); }
+  else if (k === '-' || k === '_') { $('#size').value = clamp(size() - 1, 4, 60); $('#sizev').textContent = size(); drawFrame(); }
+  else if (k === '=' || k === '+') { $('#size').value = clamp(size() + 1, 4, 60); $('#sizev').textContent = size(); drawFrame(); }
+  else if (k === '[' || k === ']') {
+    const ev = S.doc.events.map(x => x.frame), t = k === ']' ? ev.find(f => f > S.f) : [...ev].reverse().find(f => f < S.f);
+    if (t !== undefined) goto(t);
+  }
+});
+window.addEventListener('beforeunload', () => { if (S.saveT) save(); });
+
+function toggleSug() {
+  if (!S.canSuggest) { $('#sugmsg').textContent = 'start server with --weights'; return; }
+  S.showSug = !S.showSug; $('#sugbtn').style.borderColor = S.showSug ? '#ffee00' : ''; S.sug = null; $('#sugmsg').textContent = S.showSug ? 'loading…' : ''; fetchSuggestions(); drawAll();
+}
+
+// ---------------------------------------------------------------- wiring
+$('#evbtns').innerHTML = EV.map(([k, t, n, c]) => `<div class="ev row"><button class="evb" data-t="${t}" style="border-left-color:${c}">${n} <kbd>${k}</kbd></button></div>`).join('');
+$('#evbtns').addEventListener('click', e => { const b = e.target.closest('.evb'); if (b) arm(b.dataset.t); });
+$('#evlist').addEventListener('click', e => {
+  const x = e.target.closest('.x'); if (x) { delEvent(+x.dataset.id); return; }
+  const r = e.target.closest('.evr'); if (r) goto(+r.dataset.f);
+});
+$('#size').addEventListener('input', () => { $('#sizev').textContent = size(); drawFrame(); });
+$('#alignBtn').addEventListener('click', () => { fitView(); drawFrame(); });
+$('#gap').addEventListener('change', drawAll);
+$('#sugbtn').addEventListener('click', toggleSug);
+$('#vsel').addEventListener('change', e => openVideo(e.target.value));
+$('#up').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return; status('uploading…');
+  const fd = new FormData(); fd.append('file', f);
+  const r = await fetch('/api/upload', {method: 'POST', body: fd});
+  if (r.ok) { const j = await r.json(); await loadList(j.name); status('uploaded'); } else status('upload failed', true);
+});
+$('#exp').addEventListener('click', async () => {
+  await flush(); $('#expmsg').textContent = 'exporting…'; $('#expres').innerHTML = '';
+  const r = await fetch('/api/export', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
+    max_gap: maxGap(), val_block: +$('#vblock').value, val_every: +$('#vevery').value, crops: $('#crops').checked})});
+  const j = await r.json(); $('#expmsg').textContent = '';
+  if (!r.ok) { $('#expres').innerHTML = `<div class="warn">${j.detail || 'export failed'}</div>`; return; }
+  $('#expres').innerHTML = `<div class="mut">ball images: train ${j.ball_train} / val ${j.ball_val} · negatives ${j.neg_train + j.neg_val} · events ${j.events} · crops ${j.crops}</div>
+    ${j.warning ? `<div class="warn">${j.warning}</div>` : ''}<div>saved in <code>${j.dataset}</code></div>
+    <a href="/api/download/${j.zip}" style="color:var(--acc)">download zip</a><pre>${j.train_cmd}</pre>`;
+});
+window.addEventListener('resize', resize);
+new ResizeObserver(resize).observe($('#stage'));
+renderArmed(); resize(); loadList();
+</script></body></html>
